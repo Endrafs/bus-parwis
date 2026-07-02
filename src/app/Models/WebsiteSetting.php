@@ -6,5 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class WebsiteSetting extends Model
 {
-    //
+    protected $fillable = [
+        'nama_website',
+        'logo',
+        'deskripsi',
+        'nomor_whatsapp',
+        'email',
+        'alamat',
+        'rekening_bank',
+    ];
 }

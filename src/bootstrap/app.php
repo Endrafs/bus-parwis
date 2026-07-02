@@ -12,6 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
         api: __DIR__ . '/../routes/api.php',
     )
+    ->withProviders([
+        App\Providers\ViewServiceProvider::class,
+    ])
     ->withMiddleware(function (Middleware $middleware) {
         //
     })

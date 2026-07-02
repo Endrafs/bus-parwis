@@ -14,7 +14,6 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser, HasAvatar
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, HasRoles, Notifiable;
 
     /**
@@ -41,7 +40,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
      * @return array<string, string>
      */
@@ -68,11 +67,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     }
 
     /**
-     * Determine if the user can access the Filament panel.
+     * Determine if the user can access the Filament Admin Panel.
      */
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->hasRole('Admin');
+        return $this->hasRole('super_admin');
     }
 
     /**

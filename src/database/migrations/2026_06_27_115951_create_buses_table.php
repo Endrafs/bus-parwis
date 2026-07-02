@@ -15,12 +15,19 @@ return new class extends Migration
             $table->id();
 
             $table->string('nama_bus');
-            $table->enum('kategori_bus', ['Big Bus', 'Medium Bus']);
-            $table->enum('tipe_bus', ['Single Glass', 'Double Glass', 'Standard']);
+            $table->enum('kategori_bus', [
+                'Big Bus',
+                'Medium Bus',
+            ]);
 
-            $table->unsignedTinyInteger('kapasitas');
+            $table->enum('tipe_bus', [
+                'SHD Single Glass',
+                'SHD Double Glass',
+                'Medium',
+            ]);
 
-            $table->decimal('harga_sewa', 12, 2);
+            $table->unsignedInteger('kapasitas');
+            $table->decimal('harga_sewa', 15, 2);
 
             $table->string('foto')->nullable();
 
