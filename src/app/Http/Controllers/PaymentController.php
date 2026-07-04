@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\Payment;
+use App\Models\WebsiteSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +27,9 @@ class PaymentController extends Controller
             abort(403, 'Pembayaran tidak dapat dilakukan pada status booking saat ini.');
         }
 
-        return view('payments.create', compact('booking'));
+        $websiteSettings = WebsiteSetting::first();
+
+        return view('payments.create', compact('booking', 'websiteSettings'));
     }
 
     /**

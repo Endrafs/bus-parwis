@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\Bus;
+use App\Models\WebsiteSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +21,9 @@ class BookingController extends Controller
             ->where('status', true)
             ->findOrFail($request->query('bus_id'));
 
-        return view('bookings.create', compact('bus'));
+        $websiteSettings = WebsiteSetting::first();
+
+        return view('bookings.create', compact('bus', 'websiteSettings'));
     }
 
     /**

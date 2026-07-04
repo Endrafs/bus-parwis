@@ -1,119 +1,162 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Upload Pembayaran — {{ $booking->kode_booking }} — Bus Parwis</title>
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>Upload Pembayaran — {{ $booking->kode_booking }} — PHD Trans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Boldonse&family=Inter+Tight:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased bg-gray-50">
-    <nav class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <a href="{{ route('home') }}" class="text-xl font-bold text-indigo-600">🚌 Bus Parwis</a>
-                <a href="{{ route('booking.show', $booking->kode_booking) }}" class="text-gray-600 hover:text-indigo-600 font-medium text-sm">← Kembali ke Booking</a>
-            </div>
-        </div>
-    </nav>
+<body>
+  @include('partials.public-header')
 
-    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <h1 class="text-2xl font-bold text-gray-900 mb-2">💳 Upload Pembayaran</h1>
-        <p class="text-gray-500 mb-6">Booking: <strong>{{ $booking->kode_booking }}</strong> — Total: <strong>Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</strong></p>
+  <main id="main">
+    <section class="snug">
+      <div class="container container--narrow">
+        <a href="{{ route('booking.show', $booking->kode_booking) }}" style="color:var(--fg-mute);font-family:var(--font-mono);font-size:var(--text-sm);display:inline-flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-6);">
+          <svg width="14" height="10" viewBox="0 0 14 10" fill="none" style="transform:rotate(180deg);"><path d="M1 5h12m0 0L9 1m4 4L9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Kembali
+        </a>
+
+        <div style="text-align:center;margin-bottom:var(--space-7);">
+          <span class="eyebrow" style="display:inline-flex;"><span class="dot" aria-hidden="true"></span>Pembayaran</span>
+          <h2 style="margin-top:var(--space-3);">Upload <span class="purple">Pembayaran</span></h2>
+          <p style="color:var(--fg-soft);">Booking: <strong>{{ $booking->kode_booking }}</strong> — Total: <strong style="color:var(--purple);">Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</strong></p>
+        </div>
 
         @if ($errors->any())
-            <div class="bg-red-50 border border-red-200 text-red-800 rounded-xl p-4 mb-6">
-                <ul class="list-disc list-inside text-sm">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
+          <div style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:var(--radius);padding:var(--space-4);margin-bottom:var(--space-5);">
+            <ul style="color:#F87171;font-size:var(--text-sm);margin:0;padding-left:var(--space-5);">
+              @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          </div>
         @endif
 
-        {{-- Info Rekening --}}
-        <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 mb-6">
-            <h3 class="font-semibold text-blue-900 mb-2">🏦 Info Pembayaran</h3>
-            <p class="text-sm text-blue-700">Silakan transfer ke rekening berikut:</p>
-            <div class="mt-3 bg-white rounded-lg p-3">
-                <p class="font-mono font-bold text-gray-900 whitespace-pre-line">{{ $websiteSettings->rekening_bank ?? 'BCA 1234567890' }}</p>
-                @if($websiteSettings && $websiteSettings->nomor_whatsapp)
-                <p class="text-sm text-gray-500 mt-1">WhatsApp: {{ $websiteSettings->nomor_whatsapp }}</p>
-                @endif
-            </div>
-            <p class="text-xs text-blue-600 mt-3">Setelah transfer, upload bukti transfer di form bawah.</p>
+        <!-- Bank Info -->
+        <div style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2);border-radius:var(--radius-lg);padding:var(--space-5);margin-bottom:var(--space-6);">
+          <h4 style="font-size:var(--text-base);margin-bottom:var(--space-2);">🏦 Info Pembayaran</h4>
+          <p style="color:var(--fg-soft);font-size:var(--text-sm);margin-bottom:var(--space-3);">Silakan transfer ke rekening berikut:</p>
+          <div style="background:var(--ink-000);border-radius:var(--radius);padding:var(--space-4);">
+            <p style="font-family:var(--font-mono);font-weight:700;font-size:var(--text-lg);color:var(--purple);white-space:pre-line;">{{ $websiteSettings->rekening_bank ?? 'BCA 1234567890 a.n. PHD Trans' }}</p>
+            @if($websiteSettings && $websiteSettings->nomor_whatsapp)
+              <p style="color:var(--fg-mute);font-size:var(--text-sm);margin-top:var(--space-2);">WhatsApp: {{ $websiteSettings->nomor_whatsapp }}</p>
+            @endif
+          </div>
+          <p style="color:var(--fg-mute);font-size:var(--text-xs);margin-top:var(--space-2);">Setelah transfer, upload bukti transfer di form bawah.</p>
         </div>
 
-        <form method="POST" action="{{ route('payment.store', $booking->kode_booking) }}" enctype="multipart/form-data" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            @csrf
+        <!-- Upload Form -->
+        <form method="POST" action="{{ route('payment.store', $booking->kode_booking) }}" enctype="multipart/form-data" class="form-card">
+          @csrf
 
-            {{-- Jenis Pembayaran --}}
-            <div class="mb-5">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Pembayaran *</label>
-                <div class="grid grid-cols-2 gap-3">
-                    <label class="relative flex items-center p-4 border rounded-xl cursor-pointer hover:border-indigo-400 has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50">
-                        <input type="radio" name="jenis_pembayaran" value="DP" {{ old('jenis_pembayaran') === 'DP' ? 'checked' : '' }} class="sr-only" required>
-                        <div>
-                            <p class="font-semibold text-gray-900">DP</p>
-                            <p class="text-xs text-gray-500">Uang Muka</p>
-                        </div>
-                    </label>
-                    <label class="relative flex items-center p-4 border rounded-xl cursor-pointer hover:border-indigo-400 has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50">
-                        <input type="radio" name="jenis_pembayaran" value="Pelunasan" {{ old('jenis_pembayaran') === 'Pelunasan' ? 'checked' : '' }} class="sr-only" required>
-                        <div>
-                            <p class="font-semibold text-gray-900">Pelunasan</p>
-                            <p class="text-xs text-gray-500">Lunas</p>
-                        </div>
-                    </label>
-                </div>
-                @error('jenis_pembayaran')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+          <div class="form-row form-row--full">
+            <div class="form-field">
+              <label>Jenis Pembayaran *</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);">
+                <label style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4);border:2px solid var(--rule);border-radius:var(--radius);cursor:pointer;transition:border-color var(--dur-fast);">
+                  <input type="radio" name="jenis_pembayaran" value="DP" {{ old('jenis_pembayaran') === 'DP' ? 'checked' : '' }} style="accent-color:var(--purple);" required>
+                  <div>
+                    <p style="font-weight:600;">DP</p>
+                    <p style="color:var(--fg-mute);font-size:var(--text-xs);">Uang Muka</p>
+                  </div>
+                </label>
+                <label style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4);border:2px solid var(--rule);border-radius:var(--radius);cursor:pointer;transition:border-color var(--dur-fast);">
+                  <input type="radio" name="jenis_pembayaran" value="Pelunasan" {{ old('jenis_pembayaran') === 'Pelunasan' ? 'checked' : '' }} style="accent-color:var(--purple);" required>
+                  <div>
+                    <p style="font-weight:600;">Pelunasan</p>
+                    <p style="color:var(--fg-mute);font-size:var(--text-xs);">Lunas</p>
+                  </div>
+                </label>
+              </div>
+              @error('jenis_pembayaran')<span style="color:#F87171;font-size:var(--text-xs);">{{ $message }}</span>@enderror
             </div>
+          </div>
 
-            {{-- Nominal --}}
-            <div class="mb-5">
-                <label for="nominal" class="block text-sm font-medium text-gray-700 mb-1">Nominal Transfer *</label>
-                <input type="number" name="nominal" id="nominal"
-                       value="{{ old('nominal') }}"
-                       placeholder="Masukkan jumlah yang ditransfer"
-                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                <p class="text-xs text-gray-400 mt-1">Total booking: Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</p>
-                @error('nominal')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+          <div class="form-row">
+            <div class="form-field">
+              <label for="nominal">Nominal Transfer *</label>
+              <input type="number" name="nominal" id="nominal"
+                     value="{{ old('nominal') }}"
+                     placeholder="Masukkan jumlah"
+                     required />
+              <small style="color:var(--fg-mute);">Total booking: Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</small>
+              @error('nominal')<span style="color:#F87171;font-size:var(--text-xs);">{{ $message }}</span>@enderror
             </div>
-
-            {{-- Tanggal Bayar --}}
-            <div class="mb-5">
-                <label for="tanggal_bayar" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Transfer *</label>
-                <input type="date" name="tanggal_bayar" id="tanggal_bayar"
-                       value="{{ old('tanggal_bayar', date('Y-m-d')) }}"
-                       max="{{ date('Y-m-d') }}"
-                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                @error('tanggal_bayar')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+            <div class="form-field">
+              <label for="tanggal_bayar">Tanggal Transfer *</label>
+              <input type="date" name="tanggal_bayar" id="tanggal_bayar"
+                     value="{{ old('tanggal_bayar', date('Y-m-d')) }}"
+                     max="{{ date('Y-m-d') }}"
+                     required />
+              @error('tanggal_bayar')<span style="color:#F87171;font-size:var(--text-xs);">{{ $message }}</span>@enderror
             </div>
+          </div>
 
-            {{-- Bukti Transfer --}}
-            <div class="mb-5">
-                <label for="bukti_transfer" class="block text-sm font-medium text-gray-700 mb-1">Upload Bukti Transfer *</label>
-                <input type="file" name="bukti_transfer" id="bukti_transfer"
-                       accept="image/jpeg,image/jpg,image/png"
-                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                <p class="text-xs text-gray-400 mt-1">Format: JPG/PNG, maks. 2MB</p>
-                @error('bukti_transfer')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+          <div class="form-row form-row--full">
+            <div class="form-field">
+              <label for="bukti_transfer">Upload Bukti Transfer *</label>
+              <input type="file" name="bukti_transfer" id="bukti_transfer"
+                     accept="image/jpeg,image/jpg,image/png"
+                     required />
+              <small style="color:var(--fg-mute);">Format: JPG/PNG, maks. 2MB</small>
+              @error('bukti_transfer')<span style="color:#F87171;font-size:var(--text-xs);">{{ $message }}</span>@enderror
             </div>
+          </div>
 
-            {{-- Catatan --}}
-            <div class="mb-5">
-                <label for="catatan" class="block text-sm font-medium text-gray-700 mb-1">Catatan (opsional)</label>
-                <textarea name="catatan" id="catatan" rows="2"
-                          placeholder="Info tambahan untuk admin..."
-                          class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('catatan') }}</textarea>
+          <div class="form-row form-row--full">
+            <div class="form-field">
+              <label for="catatan">Catatan (opsional)</label>
+              <textarea name="catatan" id="catatan" rows="2" placeholder="Info tambahan untuk admin...">{{ old('catatan') }}</textarea>
             </div>
+          </div>
 
-            <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-xl hover:bg-indigo-700 font-semibold text-lg transition shadow-md">
-                Submit Pembayaran
+          <div class="form-actions" style="border-top:none;padding-top:0;">
+            <small>Pastikan data yang diisi sudah benar</small>
+            <button type="submit" class="btn btn--primary btn--lg">
+              Submit Pembayaran
+              <svg class="arrow" width="16" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true"><path d="M1 5h12m0 0L9 1m4 4L9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
+          </div>
         </form>
-    </div>
+      </div>
+    </section>
+  </main>
+
+  @include('partials.public-footer')
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggle = document.querySelector('.nav-toggle');
+      const drawer = document.getElementById('mobile-drawer');
+      const closeBtn = document.querySelector('.drawer-close');
+      if (toggle && drawer) {
+        toggle.addEventListener('click', function() {
+          const expanded = toggle.getAttribute('aria-expanded') === 'true';
+          toggle.setAttribute('aria-expanded', !expanded);
+          drawer.setAttribute('aria-hidden', expanded);
+          document.body.style.overflow = expanded ? '' : 'hidden';
+        });
+        if (closeBtn) {
+          closeBtn.addEventListener('click', function() {
+            toggle.setAttribute('aria-expanded', 'false');
+            drawer.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+          });
+        }
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' && drawer.getAttribute('aria-hidden') === 'false') {
+            toggle.setAttribute('aria-expanded', 'false');
+            drawer.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>

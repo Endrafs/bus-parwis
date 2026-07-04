@@ -1,47 +1,63 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>Login — PHD Trans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Boldonse&family=Inter+Tight:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body style="background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--space-5);">
+  <div style="width:100%;max-width:440px;">
+    <div style="text-align:center;margin-bottom:var(--space-7);">
+      <a href="{{ route('home') }}" class="brand" style="display:inline-flex;font-size:var(--text-2xl);justify-content:center;"><span class="brand-mark" aria-hidden="true"></span> PHD Trans</a>
+    </div>
 
-    <form method="POST" action="{{ route('login') }}">
+    <div class="form-card">
+      <div style="text-align:center;margin-bottom:var(--space-5);">
+        <h3 style="font-size:var(--text-xl);">Masuk</h3>
+        <p style="color:var(--fg-soft);font-size:var(--text-sm);margin-top:var(--space-1);">Masuk ke akun Anda untuk mulai memesan.</p>
+      </div>
+
+      <form method="POST" action="{{ route('login') }}">
         @csrf
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <div class="form-field" style="margin-bottom:var(--space-4);">
+          <label for="email">Email</label>
+          <input type="email" name="email" id="email" placeholder="email@anda.com" value="{{ old('email') }}" required autofocus />
+          @error('email')<span style="color:#F87171;font-size:var(--text-xs);">{{ $message }}</span>@enderror
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div class="form-field" style="margin-bottom:var(--space-4);">
+          <label for="password">Password</label>
+          <input type="password" name="password" id="password" placeholder="••••••••" required />
+          @error('password')<span style="color:#F87171;font-size:var(--text-xs);">{{ $message }}</span>@enderror
         </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
+        <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-5);">
+          <input type="checkbox" name="remember" id="remember" style="accent-color:var(--purple);width:16px;height:16px;">
+          <label for="remember" style="color:var(--fg-soft);font-size:var(--text-sm);">Ingat saya</label>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
+        <div class="form-actions" style="flex-direction:column;border-top:none;padding-top:0;">
+          <button type="submit" class="btn btn--primary btn--lg" style="width:100%;justify-content:center;">
+            Masuk
+            <svg class="arrow" width="16" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true"><path d="M1 5h12m0 0L9 1m4 4L9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          @if (Route::has('password.request'))
+            <a href="{{ route('password.request') }}" style="color:var(--fg-mute);font-size:var(--text-sm);">Lupa password?</a>
+          @endif
         </div>
-    </form>
-</x-guest-layout>
+      </form>
+
+      <hr class="divider" />
+      <p style="text-align:center;color:var(--fg-soft);font-size:var(--text-sm);">
+        Belum punya akun? <a href="{{ route('register') }}" style="color:var(--purple);font-weight:500;">Daftar</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

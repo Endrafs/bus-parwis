@@ -1,134 +1,120 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $bus->nama_bus }} — Bus Parwis</title>
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>{{ $bus->nama_bus }} — PHD Trans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Boldonse&family=Inter+Tight:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased bg-gray-50">
-    <!-- Navbar -->
-    <nav class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('home') }}" class="text-gray-500 hover:text-indigo-600">← Kembali</a>
-                    <a href="{{ route('home') }}" class="text-xl font-bold text-indigo-600">🚌 Bus Parwis</a>
-                </div>
-                <div class="flex items-center space-x-4">
-                    @auth
-                        <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-indigo-600 font-medium">Dashboard</a>
-                        <form method="POST" action="{{ route('logout') }}" class="inline">
-                            @csrf
-                            <button type="submit" class="text-gray-600 hover:text-red-600 font-medium">Logout</button>
-                        </form>
-                    @else
-                        <a href="{{ route('login') }}" class="text-gray-600 hover:text-indigo-600 font-medium">Login</a>
-                        <a href="{{ route('register') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 font-medium transition">Daftar</a>
-                    @endauth
-                </div>
+<body>
+  @include('partials.public-header')
+
+  <main id="main">
+    <section class="snug">
+      <div class="container container--wide">
+        <a href="{{ route('home') }}" style="color:var(--fg-mute);font-family:var(--font-mono);font-size:var(--text-sm);display:inline-flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-6);">
+          <svg width="14" height="10" viewBox="0 0 14 10" fill="none" style="transform:rotate(180deg);"><path d="M1 5h12m0 0L9 1m4 4L9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Kembali ke Armada
+        </a>
+
+        <div class="split">
+          <div class="split-media" style="aspect-ratio:4/3;">
+            @if($bus->foto)
+              <img src="{{ asset('storage/' . $bus->foto) }}" alt="{{ $bus->nama_bus }}" />
+            @else
+              <div style="width:100%;height:100%;background:linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);display:flex;align-items:center;justify-content:center;">
+                <span style="font-size:6rem;opacity:0.3;">🚌</span>
+              </div>
+            @endif
+          </div>
+          <div class="split-text">
+            <span class="eyebrow"><span class="dot" aria-hidden="true"></span>{{ $bus->kategori_bus }}</span>
+            <h1 style="margin-top:var(--space-3);">{{ $bus->nama_bus }}</h1>
+            <div style="display:flex;gap:var(--space-3);margin-block:var(--space-4);">
+              <span class="badge badge--confirmed">🪑 {{ $bus->kapasitas }} Kursi</span>
+              <span class="badge badge--waiting">🏷️ {{ $bus->tipe_bus }}</span>
             </div>
-        </div>
-    </nav>
+            <p class="lede" style="margin-block:var(--space-4);">
+              @if($bus->deskripsi)
+                {{ $bus->deskripsi }}
+              @else
+                Bus {{ $bus->kategori_bus }} dengan kapasitas {{ $bus->kapasitas }} orang, tipe {{ $bus->tipe_bus }}. Cocok untuk perjalanan wisata, study tour, dan acara keluarga.
+              @endif
+            </p>
 
-    <!-- Bus Detail -->
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <!-- Header -->
-        <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
-            <div class="h-64 sm:h-80 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-                @if($bus->foto)
-                    <img src="{{ asset('storage/' . $bus->foto) }}" alt="{{ $bus->nama_bus }}" class="w-full h-full object-cover">
-                @else
-                    <div class="text-center text-white">
-                        <svg class="w-24 h-24 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7h8M8 11h8M8 15h5M4 19h16a1 1 0 001-1V6a1 1 0 00-1-1H4a1 1 0 00-1 1v12a1 1 0 001 1z" /></svg>
-                        <span>Foto belum tersedia</span>
-                    </div>
-                @endif
+            @if($bus->facilities->isNotEmpty())
+              <div style="margin-top:var(--space-4);">
+                <span class="label">Fasilitas</span>
+                <div style="display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-3);">
+                  @foreach($bus->facilities as $facility)
+                    <span style="background:var(--bg-card);border:1px solid var(--rule);border-radius:var(--radius-full);padding:4px 14px;font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:0.06em;color:var(--fg-soft);">
+                      {{ $facility->nama_fasilitas }}
+                    </span>
+                  @endforeach
+                </div>
+              </div>
+            @endif
+
+            <hr class="divider" style="margin-block:var(--space-5);" />
+
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-4);">
+              <div>
+                <span class="label">Harga sewa / hari</span>
+                <div style="font-family:var(--font-display);font-size:var(--text-3xl);color:var(--purple);">Rp {{ number_format($bus->harga_sewa, 0, ',', '.') }}</div>
+              </div>
+              @auth
+                <a href="{{ route('booking.create', ['bus_id' => $bus->id]) }}" class="btn btn--primary btn--lg">
+                  Pesan Sekarang
+                  <svg class="arrow" width="16" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true"><path d="M1 5h12m0 0L9 1m4 4L9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              @else
+                <div style="background:var(--bg-card);border:1px solid var(--rule);border-radius:var(--radius);padding:var(--space-4) var(--space-5);">
+                  <p style="color:var(--fg-soft);font-size:var(--text-sm);">
+                    Silakan <a href="{{ route('login') }}" style="color:var(--purple);font-weight:500;">Login</a> atau <a href="{{ route('register') }}" style="color:var(--purple);font-weight:500;">Daftar</a> untuk memesan bus ini.
+                  </p>
+                </div>
+              @endauth
             </div>
-
-            <div class="p-6 sm:p-8">
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                    <div>
-                        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">{{ $bus->nama_bus }}</h1>
-                        <div class="flex gap-2 mt-2">
-                            <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $bus->kategori_bus === 'Big Bus' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
-                                {{ $bus->kategori_bus }}
-                            </span>
-                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">
-                                {{ $bus->tipe_bus }}
-                            </span>
-                            <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $bus->status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                {{ $bus->status ? 'Tersedia' : 'Tidak Tersedia' }}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-sm text-gray-500">Harga sewa per hari</span>
-                        <div class="text-3xl font-bold text-indigo-600">Rp {{ number_format($bus->harga_sewa, 0, ',', '.') }}</div>
-                    </div>
-                </div>
-
-                <!-- Spesifikasi -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-                    <div class="bg-gray-50 rounded-xl p-5">
-                        <h3 class="font-semibold text-gray-900 mb-3">📋 Spesifikasi</h3>
-                        <dl class="space-y-2 text-sm">
-                            <div class="flex justify-between">
-                                <dt class="text-gray-500">Kategori</dt>
-                                <dd class="font-medium text-gray-900">{{ $bus->kategori_bus }}</dd>
-                            </div>
-                            <div class="flex justify-between">
-                                <dt class="text-gray-500">Tipe</dt>
-                                <dd class="font-medium text-gray-900">{{ $bus->tipe_bus }}</dd>
-                            </div>
-                            <div class="flex justify-between">
-                                <dt class="text-gray-500">Kapasitas</dt>
-                                <dd class="font-medium text-gray-900">{{ $bus->kapasitas }} orang</dd>
-                            </div>
-                        </dl>
-                    </div>
-
-                    @if($bus->facilities->isNotEmpty())
-                    <div class="bg-gray-50 rounded-xl p-5">
-                        <h3 class="font-semibold text-gray-900 mb-3">✨ Fasilitas</h3>
-                        <ul class="space-y-1.5 text-sm">
-                            @foreach($bus->facilities as $facility)
-                                <li class="flex items-center gap-2 text-gray-700">
-                                    <span class="text-green-500">✓</span>
-                                    {{ $facility->nama_fasilitas }}
-                                    @if($facility->deskripsi)
-                                        <span class="text-gray-400 text-xs">— {{ $facility->deskripsi }}</span>
-                                    @endif
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    @endif
-                </div>
-
-                <!-- CTA -->
-                <div class="border-t pt-6 flex flex-col sm:flex-row items-center gap-4">
-                    @auth
-                        <a href="{{ route('booking.create', ['bus_id' => $bus->id]) }}" class="w-full sm:w-auto text-center bg-indigo-600 text-white px-8 py-3.5 rounded-xl hover:bg-indigo-700 font-semibold text-lg transition shadow-md">
-                            Pesan Sekarang
-                        </a>
-                    @else
-                        <div class="w-full text-center bg-gray-100 rounded-xl p-4">
-                            <p class="text-gray-600">Silakan <a href="{{ route('login') }}" class="text-indigo-600 font-semibold hover:underline">Login</a> atau <a href="{{ route('register') }}" class="text-indigo-600 font-semibold hover:underline">Daftar</a> untuk memesan bus ini.</p>
-                        </div>
-                    @endauth
-                </div>
-            </div>
+          </div>
         </div>
-    </div>
+      </div>
+    </section>
+  </main>
 
-    <footer class="bg-white border-t border-gray-200 mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-gray-500 text-sm">
-            &copy; {{ date('Y') }} Bus Parwis. All rights reserved.
-        </div>
-    </footer>
+  @include('partials.public-footer')
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggle = document.querySelector('.nav-toggle');
+      const drawer = document.getElementById('mobile-drawer');
+      const closeBtn = document.querySelector('.drawer-close');
+      if (toggle && drawer) {
+        toggle.addEventListener('click', function() {
+          const expanded = toggle.getAttribute('aria-expanded') === 'true';
+          toggle.setAttribute('aria-expanded', !expanded);
+          drawer.setAttribute('aria-hidden', expanded);
+          document.body.style.overflow = expanded ? '' : 'hidden';
+        });
+        if (closeBtn) {
+          closeBtn.addEventListener('click', function() {
+            toggle.setAttribute('aria-expanded', 'false');
+            drawer.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+          });
+        }
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' && drawer.getAttribute('aria-hidden') === 'false') {
+            toggle.setAttribute('aria-expanded', 'false');
+            drawer.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>

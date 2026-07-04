@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bus;
+use App\Models\WebsiteSetting;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -18,7 +19,9 @@ class BusController extends Controller
             ->latest()
             ->get();
 
-        return view('buses.index', compact('buses'));
+        $websiteSettings = WebsiteSetting::first();
+
+        return view('buses.index', compact('buses', 'websiteSettings'));
     }
 
     /**
@@ -27,7 +30,8 @@ class BusController extends Controller
     public function show(Bus $bus): View
     {
         $bus->load('facilities');
+        $websiteSettings = WebsiteSetting::first();
 
-        return view('buses.show', compact('bus'));
+        return view('buses.show', compact('bus', 'websiteSettings'));
     }
 }

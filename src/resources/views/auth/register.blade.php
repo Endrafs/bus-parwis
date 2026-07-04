@@ -1,59 +1,72 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>Daftar — PHD Trans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Boldonse&family=Inter+Tight:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body style="background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--space-5);">
+  <div style="width:100%;max-width:440px;">
+    <div style="text-align:center;margin-bottom:var(--space-7);">
+      <a href="{{ route('home') }}" class="brand" style="display:inline-flex;font-size:var(--text-2xl);justify-content:center;"><span class="brand-mark" aria-hidden="true"></span> PHD Trans</a>
+    </div>
+
+    <div class="form-card">
+      <div style="text-align:center;margin-bottom:var(--space-5);">
+        <h3 style="font-size:var(--text-xl);">Daftar Akun</h3>
+        <p style="color:var(--fg-soft);font-size:var(--text-sm);margin-top:var(--space-1);">Buat akun untuk mulai memesan bus.</p>
+      </div>
+
+      <form method="POST" action="{{ route('register') }}">
         @csrf
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+        <div class="form-field" style="margin-bottom:var(--space-4);">
+          <label for="name">Nama Lengkap</label>
+          <input type="text" name="name" id="name" placeholder="Nama Anda" value="{{ old('name') }}" required autofocus />
+          @error('name')<span style="color:#F87171;font-size:var(--text-xs);">{{ $message }}</span>@enderror
         </div>
 
-        <!-- Nomor WhatsApp -->
-        <div class="mt-4">
-            <x-input-label for="nomor_whatsapp" :value="__('Nomor WhatsApp')" />
-            <x-text-input id="nomor_whatsapp" class="block mt-1 w-full" type="text" name="nomor_whatsapp" :value="old('nomor_whatsapp')" required placeholder="6281234567890" />
-            <x-input-error :messages="$errors->get('nomor_whatsapp')" class="mt-2" />
+        <div class="form-field" style="margin-bottom:var(--space-4);">
+          <label for="email">Email</label>
+          <input type="email" name="email" id="email" placeholder="email@anda.com" value="{{ old('email') }}" required />
+          @error('email')<span style="color:#F87171;font-size:var(--text-xs);">{{ $message }}</span>@enderror
         </div>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <div class="form-field" style="margin-bottom:var(--space-4);">
+          <label for="nomor_whatsapp">No. WhatsApp</label>
+          <input type="text" name="nomor_whatsapp" id="nomor_whatsapp" placeholder="+62 812-3456-7890" value="{{ old('nomor_whatsapp') }}" required />
+          @error('nomor_whatsapp')<span style="color:#F87171;font-size:var(--text-xs);">{{ $message }}</span>@enderror
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div class="form-field" style="margin-bottom:var(--space-4);">
+          <label for="password">Password</label>
+          <input type="password" name="password" id="password" placeholder="Min. 8 karakter" required />
+          @error('password')<span style="color:#F87171;font-size:var(--text-xs);">{{ $message }}</span>@enderror
         </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        <div class="form-field" style="margin-bottom:var(--space-5);">
+          <label for="password_confirmation">Konfirmasi Password</label>
+          <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Ulangi password" required />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
+        <div class="form-actions" style="flex-direction:column;border-top:none;padding-top:0;">
+          <button type="submit" class="btn btn--primary btn--lg" style="width:100%;justify-content:center;">
+            Daftar
+            <svg class="arrow" width="16" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true"><path d="M1 5h12m0 0L9 1m4 4L9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
-    </form>
-</x-guest-layout>
+      </form>
+
+      <hr class="divider" />
+      <p style="text-align:center;color:var(--fg-soft);font-size:var(--text-sm);">
+        Sudah punya akun? <a href="{{ route('login') }}" style="color:var(--purple);font-weight:500;">Masuk</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

@@ -190,8 +190,8 @@ done
 
 echo "✅ Database is ready!"
 
-# Step 4: Install dependencies if not already installed
-if [ ! -d /var/www/html/vendor ]; then
+# Step 4: Install dependencies if vendor/autoload.php is missing
+if [ ! -f /var/www/html/vendor/autoload.php ]; then
   echo "📦 Installing composer dependencies..."
   composer install --no-interaction --prefer-dist --optimize-autoloader
 fi

@@ -12,7 +12,34 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter Tight', ...defaultTheme.fontFamily.sans],
+                display: ['Boldonse', 'Inter Tight', ...defaultTheme.fontFamily.sans],
+                mono: ['Geist Mono', 'IBM Plex Mono', ...defaultTheme.fontFamily.mono],
+            },
+            colors: {
+                ink: {
+                    DEFAULT: '#0A0A0C',
+                    '000': '#050507',
+                    deep: '#0A0A0C',
+                    card: '#18181C',
+                    elev: '#232328',
+                },
+                paper: {
+                    DEFAULT: '#F4F4F0',
+                    soft: '#C9C9C2',
+                    mute: '#80807A',
+                    deep: '#5A5A55',
+                },
+                purple: {
+                    DEFAULT: '#7C3AED',
+                    soft: '#A78BFA',
+                    deep: '#5B21B6',
+                },
+            },
+            maxWidth: {
+                container: '1340px',
+                'container-wide': '1480px',
+                'container-narrow': '1080px',
             },
         },
     },

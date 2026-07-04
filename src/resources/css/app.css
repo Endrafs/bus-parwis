@@ -1,3 +1,6 @@
+/* PHD Trans — Brivon-inspired design system */
+@import './brivon.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

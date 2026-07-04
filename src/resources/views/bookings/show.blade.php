@@ -1,204 +1,197 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Booking {{ $booking->kode_booking }} — Bus Parwis</title>
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>Booking {{ $booking->kode_booking }} — PHD Trans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Boldonse&family=Inter+Tight:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased bg-gray-50">
-    <nav class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <a href="{{ route('home') }}" class="text-xl font-bold text-indigo-600">🚌 Bus Parwis</a>
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('booking.index') }}" class="text-gray-600 hover:text-indigo-600 font-medium">Booking Saya</a>
-                    <span class="text-gray-500">{{ Auth::user()->name }}</span>
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
-                        @csrf
-                        <button type="submit" class="text-gray-600 hover:text-red-600 font-medium">Logout</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </nav>
+<body>
+  @include('partials.public-header')
 
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <a href="{{ route('booking.index') }}" class="text-indigo-600 hover:underline text-sm mb-4 inline-block">← Kembali ke daftar booking</a>
+  <main id="main">
+    <section class="snug">
+      <div class="container container--narrow">
+        <a href="{{ route('booking.index') }}" style="color:var(--fg-mute);font-family:var(--font-mono);font-size:var(--text-sm);display:inline-flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-6);">
+          <svg width="14" height="10" viewBox="0 0 14 10" fill="none" style="transform:rotate(180deg);"><path d="M1 5h12m0 0L9 1m4 4L9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Kembali
+        </a>
 
         @if(session('success'))
-            <div class="bg-green-50 border border-green-200 text-green-800 rounded-xl p-4 mb-6">
-                🎉 {{ session('success') }}
-            </div>
+          <div style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);border-radius:var(--radius);padding:var(--space-4);margin-bottom:var(--space-5);">🎉 {{ session('success') }}</div>
         @endif
 
-        {{-- Header --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900">Detail Booking</h1>
-                    <p class="text-sm text-gray-500 mt-1">Kode: <span class="font-mono font-semibold text-indigo-600">{{ $booking->kode_booking }}</span></p>
-                </div>
-                <span class="self-start px-4 py-1.5 rounded-full text-sm font-semibold
-                    @switch($booking->status)
-                        @case('Pending') bg-yellow-100 text-yellow-800 @break
-                        @case('Menunggu Verifikasi') bg-blue-100 text-blue-800 @break
-                        @case('Dikonfirmasi') bg-green-100 text-green-800 @break
-                        @case('Berjalan') bg-indigo-100 text-indigo-800 @break
-                        @case('Selesai') bg-gray-100 text-gray-800 @break
-                        @case('Dibatalkan') bg-red-100 text-red-800 @break
-                        @default bg-gray-100 text-gray-800
-                    @endswitch">
-                    {{ $booking->status }}
-                </span>
+        <!-- Header -->
+        <div style="background:var(--bg-card);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--space-6);margin-bottom:var(--space-6);">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--space-4);">
+            <div>
+              <span class="eyebrow"><span class="dot" aria-hidden="true"></span>Detail Booking</span>
+              <h2 style="margin-top:var(--space-2);">
+                <span class="purple" style="font-family:var(--font-mono);font-size:var(--text-base);background:rgba(124,58,237,0.15);padding:2px 12px;border-radius:var(--radius-full);">{{ $booking->kode_booking }}</span>
+              </h2>
             </div>
+            <span class="badge
+              @switch($booking->status)
+                @case('Pending') badge--pending @break
+                @case('Menunggu Verifikasi') badge--waiting @break
+                @case('Dikonfirmasi') badge--confirmed @break
+                @case('Berjalan') badge--ongoing @break
+                @case('Selesai') badge--completed @break
+                @case('Dibatalkan') badge--cancelled @break
+                @default badge--pending
+              @endswitch" style="font-size:var(--text-sm);">{{ $booking->status }}</span>
+          </div>
 
-            {{-- Status Progress --}}
-            <div class="mt-6">
-                @php
-                    $statuses = ['Pending', 'Menunggu Verifikasi', 'Dikonfirmasi', 'Berjalan', 'Selesai'];
-                    $currentIdx = array_search($booking->status, $statuses);
-                    if ($booking->status === 'Dibatalkan') $currentIdx = -1;
-                    $currentIdx = $currentIdx !== false ? $currentIdx : 0;
-                @endphp
-                <div class="flex items-center gap-1">
-                    @foreach($statuses as $i => $s)
-                        <div class="flex-1 flex items-center">
-                            <div class="flex flex-col items-center flex-1">
-                                <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold
-                                    {{ $i <= $currentIdx && $booking->status !== 'Dibatalkan' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-500' }}">
-                                    {{ $i + 1 }}
-                                </div>
-                                <span class="text-xs mt-1 text-center {{ $i <= $currentIdx && $booking->status !== 'Dibatalkan' ? 'text-indigo-600 font-medium' : 'text-gray-400' }}">
-                                    {{ $s }}
-                                </span>
-                            </div>
-                            @if($i < count($statuses) - 1)
-                                <div class="h-0.5 flex-1 {{ $i < $currentIdx && $booking->status !== 'Dibatalkan' ? 'bg-indigo-600' : 'bg-gray-200' }}"></div>
-                            @endif
-                        </div>
-                    @endforeach
+          <!-- Progress -->
+          @php
+            $statuses = ['Pending', 'Menunggu Verifikasi', 'Dikonfirmasi', 'Berjalan', 'Selesai'];
+            $currentIdx = array_search($booking->status, $statuses);
+            if ($booking->status === 'Dibatalkan') $currentIdx = -1;
+            $currentIdx = $currentIdx !== false ? $currentIdx : -1;
+          @endphp
+          @if($currentIdx >= 0)
+            <div class="progress-track">
+              @foreach($statuses as $i => $s)
+                <div class="progress-step {{ $i < $currentIdx ? 'progress-step--done' : ($i === $currentIdx ? 'progress-step--active' : '') }}">
+                  <span class="ps-dot"></span>
+                  <span>{{ $s }}</span>
                 </div>
-                @if($booking->status === 'Dibatalkan')
-                    <p class="text-center text-red-600 font-medium mt-3">❌ Booking ini telah dibatalkan</p>
+                @if(!$loop->last)
+                  <div class="progress-line {{ $i < $currentIdx ? 'progress-line--fill' : '' }}"></div>
                 @endif
+              @endforeach
             </div>
+          @else
+            <div style="margin-top:var(--space-4);">
+              <span class="badge badge--cancelled">Booking Dibatalkan</span>
+            </div>
+          @endif
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {{-- Detail Pemesanan --}}
-            <div class="lg:col-span-2 space-y-6">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h2 class="font-semibold text-gray-900 mb-4">📝 Detail Pemesanan</h2>
-                    <dl class="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                            <dt class="text-gray-500">Tanggal Berangkat</dt>
-                            <dd class="font-medium text-gray-900">{{ $booking->tanggal_berangkat->format('d M Y') }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-gray-500">Tanggal Kembali</dt>
-                            <dd class="font-medium text-gray-900">{{ $booking->tanggal_kembali->format('d M Y') }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-gray-500">Tujuan</dt>
-                            <dd class="font-medium text-gray-900">{{ $booking->tujuan }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-gray-500">Jumlah Hari</dt>
-                            <dd class="font-medium text-gray-900">{{ $booking->jumlah_hari }} hari</dd>
-                        </div>
-                        <div>
-                            <dt class="text-gray-500">Total Harga</dt>
-                            <dd class="font-bold text-indigo-600 text-lg">Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-gray-500">Dibuat Pada</dt>
-                            <dd class="font-medium text-gray-900">{{ $booking->created_at->format('d M Y H:i') }}</dd>
-                        </div>
-                    </dl>
-                    @if($booking->catatan)
-                        <div class="mt-4 pt-4 border-t">
-                            <dt class="text-gray-500 text-sm">Catatan</dt>
-                            <dd class="text-gray-700 mt-1">{{ $booking->catatan }}</dd>
-                        </div>
-                    @endif
+        <!-- Content Grid -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6);">
+          <!-- Booking Details -->
+          <div style="background:var(--bg-card);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--space-6);">
+            <h3 style="font-size:var(--text-lg);margin-bottom:var(--space-4);">📋 Detail Pemesanan</h3>
+            <div style="display:flex;flex-direction:column;gap:var(--space-3);">
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--fg-mute);font-family:var(--font-mono);font-size:var(--text-xs);">BUS</span>
+                <span style="font-weight:500;">{{ $booking->bus->nama_bus ?? 'Bus telah dihapus' }}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--fg-mute);font-family:var(--font-mono);font-size:var(--text-xs);">TUJUAN</span>
+                <span>{{ $booking->tujuan }}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--fg-mute);font-family:var(--font-mono);font-size:var(--text-xs);">BERANGKAT</span>
+                <span>{{ $booking->tanggal_berangkat->format('d M Y') }}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--fg-mute);font-family:var(--font-mono);font-size:var(--text-xs);">KEMBALI</span>
+                <span>{{ $booking->tanggal_kembali->format('d M Y') }}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--fg-mute);font-family:var(--font-mono);font-size:var(--text-xs);">DURASI</span>
+                <span>{{ $booking->jumlah_hari }} hari</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--fg-mute);font-family:var(--font-mono);font-size:var(--text-xs);">TOTAL</span>
+                <span style="font-family:var(--font-display);color:var(--purple);font-size:var(--text-lg);">Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</span>
+              </div>
+              @if($booking->catatan)
+                <div style="border-top:1px solid var(--rule);padding-top:var(--space-3);margin-top:var(--space-2);">
+                  <span style="color:var(--fg-mute);font-family:var(--font-mono);font-size:var(--text-xs);">CATATAN</span>
+                  <p style="color:var(--fg-soft);font-size:var(--text-sm);margin-top:var(--space-1);">{{ $booking->catatan }}</p>
                 </div>
-
-                {{-- Info Bus --}}
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h2 class="font-semibold text-gray-900 mb-4">🚌 Bus yang Dipesan</h2>
-                    @if($booking->bus)
-                        <div class="flex items-start gap-4">
-                            <div class="w-16 h-16 bg-indigo-100 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">🚌</div>
-                            <div>
-                                <h3 class="font-semibold text-gray-900">{{ $booking->bus->nama_bus }}</h3>
-                                <p class="text-sm text-gray-500">{{ $booking->bus->kategori_bus }} · {{ $booking->bus->tipe_bus }} · {{ $booking->bus->kapasitas }} orang</p>
-                                @if($booking->bus->facilities->isNotEmpty())
-                                    <div class="flex flex-wrap gap-1 mt-2">
-                                        @foreach($booking->bus->facilities as $f)
-                                            <span class="text-xs bg-gray-100 px-2 py-0.5 rounded">{{ $f->nama_fasilitas }}</span>
-                                        @endforeach
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    @else
-                        <p class="text-gray-400">Bus telah dihapus.</p>
-                    @endif
-                </div>
+              @endif
             </div>
 
-            {{-- Sidebar: Pembayaran --}}
-            <div class="space-y-6">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h2 class="font-semibold text-gray-900 mb-4">💳 Pembayaran</h2>
-                    @if($booking->payments->isNotEmpty())
-                        <div class="space-y-3">
-                            @foreach($booking->payments as $payment)
-                                <div class="border border-gray-200 rounded-lg p-3">
-                                    <div class="flex items-center justify-between mb-1">
-                                        <span class="text-xs font-semibold px-2 py-0.5 rounded-full
-                                            {{ $payment->jenis_pembayaran === 'DP' ? 'bg-orange-100 text-orange-700' : 'bg-purple-100 text-purple-700' }}">
-                                            {{ $payment->jenis_pembayaran }}
-                                        </span>
-                                        <span class="text-xs px-2 py-0.5 rounded-full
-                                            @switch($payment->status_verifikasi)
-                                                @case('Disetujui') bg-green-100 text-green-700 @break
-                                                @case('Ditolak') bg-red-100 text-red-700 @break
-                                                @default bg-gray-100 text-gray-700
-                                            @endswitch">
-                                            {{ $payment->status_verifikasi }}
-                                        </span>
-                                    </div>
-                                    <p class="font-semibold text-gray-900">Rp {{ number_format($payment->nominal, 0, ',', '.') }}</p>
-                                    <p class="text-xs text-gray-400 mt-1">{{ $payment->tanggal_bayar->format('d M Y') }}</p>
-                                    @if($payment->catatan)
-                                        <p class="text-xs text-gray-500 mt-1">{{ $payment->catatan }}</p>
-                                    @endif
-                                </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="text-center py-4">
-                            <p class="text-gray-400 text-sm">Belum ada pembayaran.</p>
-                        </div>
-                    @endif
-
-                    {{-- Upload / Lihat Bukti Transfer --}}
-                    @if($booking->status === 'Pending' || $booking->status === 'Menunggu Verifikasi')
-                        <div class="mt-4 pt-4 border-t">
-                            <a href="{{ route('payment.create', $booking->kode_booking) }}"
-                               class="block w-full text-center bg-indigo-600 text-white py-2.5 rounded-lg hover:bg-indigo-700 font-medium transition">
-                                💳 Upload Pembayaran
-                            </a>
-                        </div>
-                    @endif
+            @if($booking->bus && $booking->bus->facilities->isNotEmpty())
+              <div style="border-top:1px solid var(--rule);padding-top:var(--space-4);margin-top:var(--space-4);">
+                <span class="label">Fasilitas Bus</span>
+                <div style="display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-2);">
+                  @foreach($booking->bus->facilities as $f)
+                    <span style="background:var(--ink-000);border:1px solid var(--rule);border-radius:var(--radius-full);padding:2px 10px;font-family:var(--font-mono);font-size:var(--text-xs);color:var(--fg-mute);">{{ $f->nama_fasilitas }}</span>
+                  @endforeach
                 </div>
-            </div>
+              </div>
+            @endif
+          </div>
+
+          <!-- Payment -->
+          <div style="background:var(--bg-card);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--space-6);">
+            <h3 style="font-size:var(--text-lg);margin-bottom:var(--space-4);">💳 Pembayaran</h3>
+            @if($booking->payments->isNotEmpty())
+              <div style="display:flex;flex-direction:column;gap:var(--space-3);">
+                @foreach($booking->payments as $payment)
+                  <div style="border:1px solid var(--rule);border-radius:var(--radius);padding:var(--space-3);">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-1);">
+                      <span class="badge {{ $payment->jenis_pembayaran === 'DP' ? 'badge--pending' : 'badge--waiting' }}">{{ $payment->jenis_pembayaran }}</span>
+                      <span class="badge
+                        @switch($payment->status_verifikasi)
+                          @case('Disetujui') badge--confirmed @break
+                          @case('Ditolak') badge--cancelled @break
+                          @default badge--pending
+                        @endswitch">{{ $payment->status_verifikasi ?? 'Menunggu' }}</span>
+                    </div>
+                    <p style="font-weight:600;">Rp {{ number_format($payment->nominal, 0, ',', '.') }}</p>
+                    <p style="color:var(--fg-mute);font-size:var(--text-xs);">{{ $payment->tanggal_bayar->format('d M Y') }}</p>
+                  </div>
+                @endforeach
+              </div>
+            @else
+              <div style="text-align:center;padding:var(--space-5) 0;">
+                <p style="color:var(--fg-mute);">Belum ada pembayaran.</p>
+              </div>
+            @endif
+
+            @if($booking->status === 'Pending' || $booking->status === 'Menunggu Verifikasi')
+              <div style="margin-top:var(--space-4);padding-top:var(--space-4);border-top:1px solid var(--rule);">
+                <a href="{{ route('payment.create', $booking->kode_booking) }}" class="btn btn--primary" style="width:100%;justify-content:center;">
+                  💳 Upload Pembayaran
+                </a>
+              </div>
+            @endif
+          </div>
         </div>
-    </div>
+      </div>
+    </section>
+  </main>
+
+  @include('partials.public-footer')
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggle = document.querySelector('.nav-toggle');
+      const drawer = document.getElementById('mobile-drawer');
+      const closeBtn = document.querySelector('.drawer-close');
+      if (toggle && drawer) {
+        toggle.addEventListener('click', function() {
+          const expanded = toggle.getAttribute('aria-expanded') === 'true';
+          toggle.setAttribute('aria-expanded', !expanded);
+          drawer.setAttribute('aria-hidden', expanded);
+          document.body.style.overflow = expanded ? '' : 'hidden';
+        });
+        if (closeBtn) {
+          closeBtn.addEventListener('click', function() {
+            toggle.setAttribute('aria-expanded', 'false');
+            drawer.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+          });
+        }
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' && drawer.getAttribute('aria-hidden') === 'false') {
+            toggle.setAttribute('aria-expanded', 'false');
+            drawer.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>

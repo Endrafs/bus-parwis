@@ -1,8 +1,8 @@
-# 🚌 Bus Parwis — Sistem Penyewaan Bus Pariwisata
+# 🚌 PHD Trans — Sistem Penyewaan Bus Pariwisata Premium
 
 Aplikasi web untuk manajemen penyewaan bus pariwisata berbasis **Laravel 12** + **Filament 3**.
 
----
+> **🎨 Desain**: Template Brivon (Photography Studio) — dark theme premium (#0A0A0C) dengan aksen **ungu** (#7C3AED) khas PHD Trans.
 
 ## 📋 Fitur Utama
 
