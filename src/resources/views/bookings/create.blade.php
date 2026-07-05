@@ -27,7 +27,7 @@
         </div>
 
         <!-- Bus Summary -->
-        <div class="summary-card" style="margin-bottom:var(--space-6);">
+        <div class="glass liquid-glow summary-card" style="margin-bottom:var(--space-6);">
           <div class="summary-icon">🚌</div>
           <div class="summary-text">
             <h3>{{ $bus->nama_bus }}</h3>
@@ -44,7 +44,12 @@
         @endif
 
         <!-- Booking Form -->
-        <form method="POST" action="{{ route('booking.store') }}" class="form-card" x-data="bookingForm({{ $bus->harga_sewa }})">
+        <form method="POST" action="{{ route('booking.store') }}" class="form-card glass" style="padding:var(--space-6);" x-data="bookingForm({{ $bus->harga_sewa }}, {{ json_encode([
+            'biayaTol' => (float) ($websiteSettings?->biaya_tol_default ?? 0),
+            'biayaSolar' => (float) ($websiteSettings?->biaya_solar_default ?? 0),
+            'tipsCrew' => (float) ($websiteSettings?->tips_crew_default ?? 0),
+            'biayaParkir' => (float) ($websiteSettings?->biaya_parkir_default ?? 0),
+        ]) }})">
           @csrf
           <input type="hidden" name="bus_id" value="{{ $bus->id }}">
 
@@ -92,15 +97,27 @@
           <!-- Price Summary -->
           <div class="price-summary" x-show="jumlahHari > 0" x-cloak>
             <div class="price-row">
-              <span>Harga sewa per hari</span>
-              <span>Rp {{ number_format($bus->harga_sewa, 0, ',', '.') }}</span>
+              <span>Harga sewa unit (<span x-text="jumlahHari"></span> hari)</span>
+              <span x-text="'Rp ' + formatRupiah(hargaPerHari * jumlahHari)"></span>
             </div>
-            <div class="price-row">
-              <span>Jumlah hari</span>
-              <span x-text="jumlahHari + ' hari'"></span>
+            <div class="price-row" x-show="biayaTol > 0">
+              <span>Biaya Tol</span>
+              <span x-text="'Rp ' + formatRupiah(biayaTol)"></span>
+            </div>
+            <div class="price-row" x-show="biayaSolar > 0">
+              <span>Biaya Solar</span>
+              <span x-text="'Rp ' + formatRupiah(biayaSolar)"></span>
+            </div>
+            <div class="price-row" x-show="tipsCrew > 0">
+              <span>Tips Crew Bus</span>
+              <span x-text="'Rp ' + formatRupiah(tipsCrew)"></span>
+            </div>
+            <div class="price-row" x-show="biayaParkir > 0">
+              <span>Biaya Parkir</span>
+              <span x-text="'Rp ' + formatRupiah(biayaParkir)"></span>
             </div>
             <div class="price-row price-row--total">
-              <span>Total</span>
+              <span>Total Estimasi</span>
               <span x-text="'Rp ' + formatRupiah(totalHarga)"></span>
             </div>
           </div>
@@ -126,18 +143,22 @@
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script>
     document.addEventListener('alpine:init', () => {
-      Alpine.data('bookingForm', (hargaPerHari) => ({
+      Alpine.data('bookingForm', (hargaPerHari, biayaTambahan = {}) => ({
         tanggalBerangkat: '{{ old('tanggal_berangkat') }}',
         tanggalKembali: '{{ old('tanggal_kembali') }}',
         jumlahHari: 0,
         totalHarga: 0,
+        biayaTol: biayaTambahan.biayaTol || 0,
+        biayaSolar: biayaTambahan.biayaSolar || 0,
+        tipsCrew: biayaTambahan.tipsCrew || 0,
+        biayaParkir: biayaTambahan.biayaParkir || 0,
         hitung() {
           if (this.tanggalBerangkat && this.tanggalKembali) {
             const start = new Date(this.tanggalBerangkat);
             const end = new Date(this.tanggalKembali);
             const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
             this.jumlahHari = diff > 0 ? diff : 0;
-            this.totalHarga = this.jumlahHari * hargaPerHari;
+            this.totalHarga = (this.jumlahHari * hargaPerHari) + this.biayaTol + this.biayaSolar + this.tipsCrew + this.biayaParkir;
           } else {
             this.jumlahHari = 0;
             this.totalHarga = 0;
@@ -178,5 +199,7 @@
       }
     });
   </script>
+  @include('partials.floating-contact')
+
 </body>
 </html>

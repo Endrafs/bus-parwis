@@ -92,6 +92,73 @@ class BookingResource extends Resource
                             ->disabled()
                             ->dehydrated(),
 
+                        Forms\Components\TextInput::make('harga_sewa_unit')
+                            ->label('Harga Sewa Unit / Hari')
+                            ->prefix('Rp')
+                            ->numeric()
+                            ->required()
+                            ->default(0)
+                            ->minValue(0)
+                            ->live()
+                            ->afterStateUpdated(function (Get $get, Set $set) {
+                                self::calculateTotal($get, $set);
+                            }),
+
+                        Forms\Components\TextInput::make('biaya_tol')
+                            ->label('Biaya Tol')
+                            ->prefix('Rp')
+                            ->numeric()
+                            ->default(0)
+                            ->minValue(0)
+                            ->live()
+                            ->afterStateUpdated(function (Get $get, Set $set) {
+                                self::calculateTotal($get, $set);
+                            }),
+
+                        Forms\Components\TextInput::make('biaya_solar')
+                            ->label('Biaya Solar')
+                            ->prefix('Rp')
+                            ->numeric()
+                            ->default(0)
+                            ->minValue(0)
+                            ->live()
+                            ->afterStateUpdated(function (Get $get, Set $set) {
+                                self::calculateTotal($get, $set);
+                            }),
+
+                        Forms\Components\TextInput::make('tips_crew')
+                            ->label('Tips Crew Bus')
+                            ->prefix('Rp')
+                            ->numeric()
+                            ->default(0)
+                            ->minValue(0)
+                            ->live()
+                            ->afterStateUpdated(function (Get $get, Set $set) {
+                                self::calculateTotal($get, $set);
+                            }),
+
+                        Forms\Components\TextInput::make('biaya_parkir')
+                            ->label('Biaya Parkir')
+                            ->prefix('Rp')
+                            ->numeric()
+                            ->default(0)
+                            ->minValue(0)
+                            ->live()
+                            ->afterStateUpdated(function (Get $get, Set $set) {
+                                self::calculateTotal($get, $set);
+                            }),
+
+                        Forms\Components\TextInput::make('biaya_tujuan')
+                            ->label('Biaya Tujuan Wisata')
+                            ->prefix('Rp')
+                            ->numeric()
+                            ->default(0)
+                            ->minValue(0)
+                            ->live()
+                            ->afterStateUpdated(function (Get $get, Set $set) {
+                                self::calculateTotal($get, $set);
+                            }),
+
                         Forms\Components\TextInput::make('total_harga')
                             ->prefix('Rp')
                             ->numeric()
@@ -144,9 +211,23 @@ class BookingResource extends Resource
 
         $days = $start->diffInDays($end) + 1;
 
-        $set('jumlah_hari', $days);
+        $hargaSewaUnit = (float) ($get('harga_sewa_unit') ?? $bus->harga_sewa);
+        $biayaTol = (float) ($get('biaya_tol') ?? 0);
+        $biayaSolar = (float) ($get('biaya_solar') ?? 0);
+        $tipsCrew = (float) ($get('tips_crew') ?? 0);
+        $biayaParkir = (float) ($get('biaya_parkir') ?? 0);
+        $biayaTujuan = (float) ($get('biaya_tujuan') ?? 0);
 
-        $set('total_harga', $days * $bus->harga_sewa);
+        $set('jumlah_hari', $days);
+        $set('harga_sewa_unit', $hargaSewaUnit);
+        $set('biaya_tol', $biayaTol);
+        $set('biaya_solar', $biayaSolar);
+        $set('tips_crew', $tipsCrew);
+        $set('biaya_parkir', $biayaParkir);
+        $set('biaya_tujuan', $biayaTujuan);
+
+        $total = Booking::hitungTotalHarga($hargaSewaUnit, $days, $biayaTol, $biayaSolar, $tipsCrew, $biayaParkir, $biayaTujuan);
+        $set('total_harga', $total);
     }
 
     public static function table(Table $table): Table

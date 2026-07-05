@@ -36,8 +36,9 @@
     <div class="footer-bottom">
       <span>© {{ date('Y') }} PHD Trans · All rights reserved.</span>
       <div class="footer-meta-links">
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
+        <a href="https://wa.me/6281353343110" target="_blank" rel="noopener" title="WhatsApp">💬 WhatsApp</a>
+        <a href="https://www.tiktok.com/@phdtrans" target="_blank" rel="noopener" title="TikTok">🎵 TikTok</a>
+        <a href="https://www.instagram.com/phd_trans/?hl=en" target="_blank" rel="noopener" title="Instagram">📸 Instagram</a>
       </div>
     </div>
   </div>

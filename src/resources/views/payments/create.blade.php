@@ -38,7 +38,7 @@
         @endif
 
         <!-- Bank Info -->
-        <div style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2);border-radius:var(--radius-lg);padding:var(--space-5);margin-bottom:var(--space-6);">
+        <div class="glass-purple liquid-glow" style="padding:var(--space-5);margin-bottom:var(--space-6);">
           <h4 style="font-size:var(--text-base);margin-bottom:var(--space-2);">🏦 Info Pembayaran</h4>
           <p style="color:var(--fg-soft);font-size:var(--text-sm);margin-bottom:var(--space-3);">Silakan transfer ke rekening berikut:</p>
           <div style="background:var(--ink-000);border-radius:var(--radius);padding:var(--space-4);">
@@ -51,22 +51,22 @@
         </div>
 
         <!-- Upload Form -->
-        <form method="POST" action="{{ route('payment.store', $booking->kode_booking) }}" enctype="multipart/form-data" class="form-card">
+        <form method="POST" action="{{ route('payment.store', $booking->kode_booking) }}" enctype="multipart/form-data" class="form-card glass" style="padding:var(--space-6);">
           @csrf
 
           <div class="form-row form-row--full">
             <div class="form-field">
               <label>Jenis Pembayaran *</label>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);">
-                <label style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4);border:2px solid var(--rule);border-radius:var(--radius);cursor:pointer;transition:border-color var(--dur-fast);">
-                  <input type="radio" name="jenis_pembayaran" value="DP" {{ old('jenis_pembayaran') === 'DP' ? 'checked' : '' }} style="accent-color:var(--purple);" required>
+                <label style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4);border:2px solid var(--rule);border-radius:var(--radius);cursor:pointer;transition:border-color var(--dur-fast);" class="{{ $booking->dp_sudah_dibayar ? 'opacity-50' : '' }}">
+                  <input type="radio" name="jenis_pembayaran" value="DP" {{ $booking->dp_sudah_dibayar ? 'disabled' : (old('jenis_pembayaran', $booking->dp_sudah_dibayar ? 'Pelunasan' : 'DP') === 'DP' ? 'checked' : '') }} style="accent-color:var(--purple);" required>
                   <div>
                     <p style="font-weight:600;">DP</p>
                     <p style="color:var(--fg-mute);font-size:var(--text-xs);">Uang Muka</p>
                   </div>
                 </label>
-                <label style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4);border:2px solid var(--rule);border-radius:var(--radius);cursor:pointer;transition:border-color var(--dur-fast);">
-                  <input type="radio" name="jenis_pembayaran" value="Pelunasan" {{ old('jenis_pembayaran') === 'Pelunasan' ? 'checked' : '' }} style="accent-color:var(--purple);" required>
+                <label style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4);border:2px solid var(--rule);border-radius:var(--radius);cursor:pointer;transition:border-color var(--dur-fast);{{ $booking->dp_sudah_dibayar ? 'border-color:var(--purple);background:rgba(124,58,237,0.08);' : '' }}">
+                  <input type="radio" name="jenis_pembayaran" value="Pelunasan" {{ old('jenis_pembayaran', $booking->dp_sudah_dibayar ? 'Pelunasan' : '') === 'Pelunasan' ? 'checked' : '' }} style="accent-color:var(--purple);" required>
                   <div>
                     <p style="font-weight:600;">Pelunasan</p>
                     <p style="color:var(--fg-mute);font-size:var(--text-xs);">Lunas</p>
@@ -77,14 +77,36 @@
             </div>
           </div>
 
+          <!-- Info sisa bayar jika DP sudah dibayar -->
+          @if($booking->dp_sudah_dibayar)
+          <div style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2);border-radius:var(--radius);padding:var(--space-4);margin-bottom:var(--space-5);">
+            <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);margin-bottom:var(--space-1);">
+              <span style="color:var(--fg-soft);">Total Harga</span>
+              <span style="font-weight:600;">Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);margin-bottom:var(--space-1);">
+              <span style="color:var(--fg-soft);">Sudah Dibayar (DP)</span>
+              <span style="font-weight:600;color:var(--purple);">Rp {{ number_format($booking->total_dibayar, 0, ',', '.') }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);border-top:1px solid var(--rule);padding-top:var(--space-2);margin-top:var(--space-2);">
+              <span style="color:var(--fg-soft);font-weight:500;">Sisa yang Harus Dibayar</span>
+              <span style="font-weight:700;color:#F87171;font-size:var(--text-base);">Rp {{ number_format($booking->sisa_pembayaran, 0, ',', '.') }}</span>
+            </div>
+          </div>
+          @endif
+
           <div class="form-row">
             <div class="form-field">
               <label for="nominal">Nominal Transfer *</label>
               <input type="number" name="nominal" id="nominal"
-                     value="{{ old('nominal') }}"
+                     value="{{ old('nominal', $booking->dp_sudah_dibayar ? $booking->sisa_pembayaran : '') }}"
                      placeholder="Masukkan jumlah"
                      required />
-              <small style="color:var(--fg-mute);">Total booking: Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</small>
+              @if($booking->dp_sudah_dibayar)
+                <small style="color:var(--fg-soft);font-weight:500;">Sisa pelunasan: <strong style="color:#F87171;">Rp {{ number_format($booking->sisa_pembayaran, 0, ',', '.') }}</strong></small>
+              @else
+                <small style="color:var(--fg-mute);">Total booking: Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</small>
+              @endif
               @error('nominal')<span style="color:#F87171;font-size:var(--text-xs);">{{ $message }}</span>@enderror
             </div>
             <div class="form-field">
@@ -126,6 +148,9 @@
       </div>
     </section>
   </main>
+
+  @include('partials.floating-contact')
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
   @include('partials.public-footer')
 

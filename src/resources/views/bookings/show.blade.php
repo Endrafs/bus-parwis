@@ -75,7 +75,7 @@
         <!-- Content Grid -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6);">
           <!-- Booking Details -->
-          <div style="background:var(--bg-card);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--space-6);">
+          <div class="glass liquid-glow" style="padding:var(--space-6);">
             <h3 style="font-size:var(--text-lg);margin-bottom:var(--space-4);">📋 Detail Pemesanan</h3>
             <div style="display:flex;flex-direction:column;gap:var(--space-3);">
               <div style="display:flex;justify-content:space-between;">
@@ -98,9 +98,50 @@
                 <span style="color:var(--fg-mute);font-family:var(--font-mono);font-size:var(--text-xs);">DURASI</span>
                 <span>{{ $booking->jumlah_hari }} hari</span>
               </div>
-              <div style="display:flex;justify-content:space-between;">
-                <span style="color:var(--fg-mute);font-family:var(--font-mono);font-size:var(--text-xs);">TOTAL</span>
-                <span style="font-family:var(--font-display);color:var(--purple);font-size:var(--text-lg);">Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</span>
+
+              <!-- Price Breakdown -->
+              <div style="border-top:1px solid var(--rule);padding-top:var(--space-3);margin-top:var(--space-2);">
+                <span style="color:var(--fg-mute);font-family:var(--font-mono);font-size:var(--text-xs);display:block;margin-bottom:var(--space-2);">RINCIAN BIAYA</span>
+                <div style="display:flex;flex-direction:column;gap:var(--space-1);font-size:var(--text-sm);">
+                  <div style="display:flex;justify-content:space-between;">
+                    <span style="color:var(--fg-soft);">Harga Sewa Unit ({{ $booking->jumlah_hari }} hari)</span>
+                    <span>Rp {{ number_format(($booking->harga_sewa_unit ?? 0) * $booking->jumlah_hari, 0, ',', '.') }}</span>
+                  </div>
+                  @if(($booking->biaya_tol ?? 0) > 0)
+                  <div style="display:flex;justify-content:space-between;">
+                    <span style="color:var(--fg-soft);">Biaya Tol</span>
+                    <span>Rp {{ number_format($booking->biaya_tol, 0, ',', '.') }}</span>
+                  </div>
+                  @endif
+                  @if(($booking->biaya_solar ?? 0) > 0)
+                  <div style="display:flex;justify-content:space-between;">
+                    <span style="color:var(--fg-soft);">Biaya Solar</span>
+                    <span>Rp {{ number_format($booking->biaya_solar, 0, ',', '.') }}</span>
+                  </div>
+                  @endif
+                  @if(($booking->tips_crew ?? 0) > 0)
+                  <div style="display:flex;justify-content:space-between;">
+                    <span style="color:var(--fg-soft);">Tips Crew Bus</span>
+                    <span>Rp {{ number_format($booking->tips_crew, 0, ',', '.') }}</span>
+                  </div>
+                  @endif
+                  @if(($booking->biaya_parkir ?? 0) > 0)
+                  <div style="display:flex;justify-content:space-between;">
+                    <span style="color:var(--fg-soft);">Biaya Parkir</span>
+                    <span>Rp {{ number_format($booking->biaya_parkir, 0, ',', '.') }}</span>
+                  </div>
+                  @endif
+                  @if(($booking->biaya_tujuan ?? 0) > 0)
+                  <div style="display:flex;justify-content:space-between;">
+                    <span style="color:var(--fg-soft);">Biaya Tujuan ({{ $booking->tujuan }})</span>
+                    <span>Rp {{ number_format($booking->biaya_tujuan, 0, ',', '.') }}</span>
+                  </div>
+                  @endif
+                  <div style="display:flex;justify-content:space-between;border-top:1px solid var(--rule);padding-top:var(--space-2);font-weight:600;color:var(--purple);">
+                    <span>Total</span>
+                    <span>Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</span>
+                  </div>
+                </div>
               </div>
               @if($booking->catatan)
                 <div style="border-top:1px solid var(--rule);padding-top:var(--space-3);margin-top:var(--space-2);">
@@ -123,10 +164,11 @@
           </div>
 
           <!-- Payment -->
-          <div style="background:var(--bg-card);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--space-6);">
+          <div class="glass-purple liquid-glow" style="padding:var(--space-6);">
             <h3 style="font-size:var(--text-lg);margin-bottom:var(--space-4);">💳 Pembayaran</h3>
+
             @if($booking->payments->isNotEmpty())
-              <div style="display:flex;flex-direction:column;gap:var(--space-3);">
+              <div style="display:flex;flex-direction:column;gap:var(--space-3);margin-bottom:var(--space-4);">
                 @foreach($booking->payments as $payment)
                   <div style="border:1px solid var(--rule);border-radius:var(--radius);padding:var(--space-3);">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-1);">
@@ -143,16 +185,45 @@
                   </div>
                 @endforeach
               </div>
+
+              <!-- Payment Summary -->
+              <div style="background:var(--ink-000);border-radius:var(--radius);padding:var(--space-3);margin-bottom:var(--space-4);">
+                <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);">
+                  <span style="color:var(--fg-soft);">Total Dibayar (Disetujui)</span>
+                  <span style="font-weight:600;color:var(--purple);">Rp {{ number_format($booking->total_dibayar, 0, ',', '.') }}</span>
+                </div>
+                @if(!$booking->is_lunas)
+                  <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);margin-top:var(--space-1);">
+                    <span style="color:var(--fg-soft);">Sisa Pembayaran</span>
+                    <span style="font-weight:600;color:#F87171;">Rp {{ number_format($booking->sisa_pembayaran, 0, ',', '.') }}</span>
+                  </div>
+                @else
+                  <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);margin-top:var(--space-1);">
+                    <span style="color:var(--fg-soft);">Status</span>
+                    <span style="font-weight:600;color:#34D399;">✅ LUNAS</span>
+                  </div>
+                @endif
+              </div>
             @else
               <div style="text-align:center;padding:var(--space-5) 0;">
                 <p style="color:var(--fg-mute);">Belum ada pembayaran.</p>
               </div>
             @endif
 
-            @if($booking->status === 'Pending' || $booking->status === 'Menunggu Verifikasi')
+            @if($booking->is_lunas)
+              <div style="margin-top:var(--space-4);padding-top:var(--space-4);border-top:1px solid var(--rule);">
+                <a href="{{ route('booking.invoice', $booking->kode_booking) }}" class="btn btn--primary" style="width:100%;justify-content:center;">
+                  📄 Lihat Invoice
+                </a>
+              </div>
+            @elseif($booking->status === 'Pending' || $booking->status === 'Menunggu Verifikasi' || ($booking->dp_sudah_dibayar && !$booking->is_lunas))
               <div style="margin-top:var(--space-4);padding-top:var(--space-4);border-top:1px solid var(--rule);">
                 <a href="{{ route('payment.create', $booking->kode_booking) }}" class="btn btn--primary" style="width:100%;justify-content:center;">
-                  💳 Upload Pembayaran
+                  @if($booking->dp_sudah_dibayar && !$booking->is_lunas)
+                    💳 Bayar Pelunasan (Rp {{ number_format($booking->sisa_pembayaran, 0, ',', '.') }})
+                  @else
+                    💳 Upload Pembayaran
+                  @endif
                 </a>
               </div>
             @endif
@@ -163,6 +234,9 @@
   </main>
 
   @include('partials.public-footer')
+  @include('partials.floating-contact')
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {

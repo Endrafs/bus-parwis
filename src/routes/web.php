@@ -62,6 +62,8 @@ Route::middleware('auth')->group(function () {
 
     // Detail booking (berdasarkan kode_booking) — harus setelah payment routes
     Route::get('/booking/{kodeBooking}', [BookingController::class, 'show'])->name('booking.show');
+    // Invoice booking
+    Route::get('/booking/{kodeBooking}/invoice', [BookingController::class, 'invoice'])->name('booking.invoice');
 });
 
 require __DIR__.'/auth.php';

@@ -1140,6 +1140,161 @@ h4 { font-size: var(--text-xl); }
 /* ---------- 27. Misc helpers ------------------------------------------- */
 .divider { border: 0; border-top: 1px solid var(--rule); margin: 0; }
 .hidden  { display: none; }
+.opacity-50 { opacity: 0.5; }
+
+/* ---------- 27b. Liquid Glass (iOS 26 style) -------------------------- */
+.glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.glass-purple {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.18) 0%, rgba(124, 58, 237, 0.06) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(124, 58, 237, 0.28);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 40px rgba(124, 58, 237, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.glass-nav {
+  background: rgba(10, 10, 12, 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.liquid-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.liquid-glow::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(124, 58, 237, 0.12) 0%, transparent 60%);
+  animation: liquidPulse 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes liquidPulse {
+  0%, 100% { transform: scale(1) translate(0, 0); opacity: 0.6; }
+  33% { transform: scale(1.05) translate(1%, -1%); opacity: 0.9; }
+  66% { transform: scale(0.97) translate(-1%, 1%); opacity: 0.5; }
+}
+
+.glass > *,
+.liquid-glow > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- 27c. Floating Contact Buttons ------------------------------ */
+.floating-contact {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+}
+
+.floating-contact__social {
+  position: relative;
+}
+
+.floating-contact__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: var(--purple);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.floating-contact__toggle:hover {
+  transform: scale(1.08);
+  box-shadow: 0 12px 32px rgba(124, 58, 237, 0.5);
+}
+
+.floating-contact__menu {
+  position: absolute;
+  bottom: 66px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(10, 10, 12, 0.85);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 16px;
+  padding: 8px;
+  min-width: 180px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+.fc-enter {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fc-leave {
+  transition: all 0.15s ease;
+}
+
+.fc-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--fg);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.fc-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.fc-item--wa svg { color: #25D366; }
+.fc-item--tiktok svg { color: #fff; }
+.fc-item--instagram svg { color: #E1306C; }
+
+/* ---------- 27d. Invoice Print Styles --------------------------------- */
+@media print {
+  .site-header, .site-footer, .floating-contact, .nav-toggle,
+  .mobile-drawer, .btn { display: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+  .glass, .glass-purple { background: #fff !important; backdrop-filter: none !important; border: 1px solid #ddd !important; box-shadow: none !important; }
+  .invoice-page { padding: 16px !important; }
+  .invoice-header { border-bottom: 2px solid #333 !important; margin-bottom: 24px !important; }
+  .invoice-title { font-size: 24px !important; color: #000 !important; }
+  .badge--confirmed { background: #e8f5e9 !important; color: #2e7d32 !important; }
+}
 
 /* ---------- 28. Reduced motion ----------------------------------------- */
 @media (prefers-reduced-motion: reduce) {

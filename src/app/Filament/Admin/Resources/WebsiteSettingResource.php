@@ -68,6 +68,39 @@ class WebsiteSettingResource extends Resource
                             ->rows(2),
                     ])
                     ->columns(2),
+
+                Forms\Components\Section::make('Biaya Default Booking')
+                    ->description('Biaya tambahan yang akan otomatis masuk ke perhitungan total harga booking.')
+                    ->schema([
+                        Forms\Components\TextInput::make('biaya_tol_default')
+                            ->label('Biaya Tol Default')
+                            ->prefix('Rp')
+                            ->numeric()
+                            ->default(0)
+                            ->minValue(0),
+
+                        Forms\Components\TextInput::make('biaya_solar_default')
+                            ->label('Biaya Solar Default')
+                            ->prefix('Rp')
+                            ->numeric()
+                            ->default(0)
+                            ->minValue(0),
+
+                        Forms\Components\TextInput::make('tips_crew_default')
+                            ->label('Tips Crew Default')
+                            ->prefix('Rp')
+                            ->numeric()
+                            ->default(0)
+                            ->minValue(0),
+
+                        Forms\Components\TextInput::make('biaya_parkir_default')
+                            ->label('Biaya Parkir Default')
+                            ->prefix('Rp')
+                            ->numeric()
+                            ->default(0)
+                            ->minValue(0),
+                    ])
+                    ->columns(2),
             ]);
     }
 

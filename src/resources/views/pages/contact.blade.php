@@ -58,7 +58,7 @@
           <div class="channel-card">
             <h3>💬 WhatsApp</h3>
             <p>Respon cepat via WhatsApp. Chat kami untuk konsultasi dan pemesanan.</p>
-            <a class="channel-line" href="https://wa.me/{{ $websiteSettings->nomor_whatsapp ?? '6281234567890' }}" target="_blank">{{ $websiteSettings->nomor_whatsapp ?? '+62 812-3456-7890' }}</a>
+            <a class="channel-line" href="https://wa.me/{{ $websiteSettings->nomor_whatsapp ?? '6281234567890' }}" target="_blank">{{ $websiteSettings->nomor_whatsapp ?? '+62 813-5334-3110' }}</a>
             <span class="mono" style="color: var(--fg-mute);">Customer Service · Respon &lt; 24 jam</span>
           </div>
           <div class="channel-card">
@@ -100,7 +100,7 @@
           <div class="form-row form-row--full">
             <div class="form-field">
               <label for="no_wa">No. WhatsApp</label>
-              <input type="text" name="no_wa" id="no_wa" placeholder="+62 812-3456-7890" required />
+              <input type="text" name="no_wa" id="no_wa" placeholder="+62 813-5334-3110" required />
             </div>
           </div>
           <div class="form-row form-row--full">
@@ -144,7 +144,7 @@
           Tidak suka form? Hubungi kami langsung via WhatsApp atau email. Setiap pesan dibaca oleh manusia, bukan bot.
         </p>
         <div class="cta-row">
-          <a class="btn btn--primary btn--lg" href="https://wa.me/{{ $websiteSettings->nomor_whatsapp ?? '6281234567890' }}" target="_blank">Whatsapp Kami
+          <a class="btn btn--primary btn--lg" href="https://wa.me/{{ $websiteSettings->nomor_whatsapp ?? '6281353343110' }}" target="_blank">Whatsapp Kami
             <svg class="arrow" width="16" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true"><path d="M1 5h12m0 0L9 1m4 4L9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
           <a class="btn btn--ghost btn--lg" href="mailto:cs@phdtrans.com">Atau kirim email</a>
@@ -155,6 +155,8 @@
   </main>
 
   @include('partials.public-footer')
+  @include('partials.floating-contact')
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {

@@ -1,4 +1,4 @@
-<header class="site-header">
+<header class="site-header glass-nav">
   <div class="container container--wide">
     <nav class="nav" aria-label="Primary">
       <a class="brand" href="{{ route('home') }}"><span class="brand-mark" aria-hidden="true"></span> PHD Trans</a>

@@ -150,9 +150,22 @@ class PaymentResource extends Resource
                             'status_verifikasi' => 'Disetujui',
                         ]);
 
-                        $record->booking->update([
-                            'status' => 'Dikonfirmasi',
-                        ]);
+                        // Hitung total yang sudah dibayar dan disetujui
+                        $booking = $record->booking;
+                        $totalDisetujui = (float) $booking->payments()
+                            ->where('status_verifikasi', 'Disetujui')
+                            ->sum('nominal');
+
+                        // Jika total yang dibayar sudah >= total_harga, booking dikonfirmasi
+                        if ($totalDisetujui >= (float) $booking->total_harga) {
+                            $booking->update([
+                                'status' => 'Dikonfirmasi',
+                            ]);
+                        } elseif ($booking->status === 'Pending') {
+                            $booking->update([
+                                'status' => 'Menunggu Verifikasi',
+                            ]);
+                        }
                     }),
 
                 Tables\Actions\Action::make('reject')

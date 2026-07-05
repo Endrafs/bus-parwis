@@ -14,5 +14,9 @@ class WebsiteSetting extends Model
         'email',
         'alamat',
         'rekening_bank',
+        'biaya_tol_default',
+        'biaya_solar_default',
+        'tips_crew_default',
+        'biaya_parkir_default',
     ];
 }
