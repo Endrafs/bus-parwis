@@ -92,8 +92,12 @@ class PageSectionResource extends Resource
                         Forms\Components\FileUpload::make('media_path')
                             ->label('File Media')
                             ->directory('page-media')
-                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml', 'video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'])
-                            ->maxSize(102400)
+                            ->acceptedFileTypes([
+                                'image/jpeg', 'image/png', 'image/webp', 'image/svg+xml', 'image/gif',
+                                'video/mp4', 'video/webm', 'video/ogg', 'video/quicktime',
+                                'video/x-msvideo', 'video/x-matroska', 'application/octet-stream',
+                            ])
+                            ->maxSize(204800)
                             ->visible(fn (Forms\Get $get) => in_array($get('media_type'), ['image', 'video'])),
 
                         Forms\Components\TextInput::make('media_url')
@@ -121,8 +125,12 @@ class PageSectionResource extends Resource
                                 Forms\Components\FileUpload::make('file_path')
                                     ->label('File')
                                     ->directory('gallery')
-                                    ->maxSize(102400)
-                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm', 'video/ogg'])
+                                    ->maxSize(204800)
+                                    ->acceptedFileTypes([
+                                        'image/jpeg', 'image/png', 'image/webp', 'image/gif',
+                                        'video/mp4', 'video/webm', 'video/ogg',
+                                        'video/x-msvideo', 'video/x-matroska', 'application/octet-stream',
+                                    ])
                                     ->visible(fn (Forms\Get $get) => in_array($get('media_type'), ['image', 'video'])),
 
                                 Forms\Components\TextInput::make('youtube_url')
