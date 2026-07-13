@@ -8,130 +8,156 @@
   <meta name="description" content="Tentang PHD Trans — Penyedia layanan penyewaan bus pariwisata terpercaya sejak 2015." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Boldonse&family=Inter+Tight:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300..700&family=JetBrains+Mono:wght@400..600&display=swap" />
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
+  <div class="particle-container" aria-hidden="true">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  </div>
   @include('partials.public-header')
 
   <main id="main">
     <!-- Hero -->
-    <section class="hero">
+    <section class="hero animate-on-scroll">
       <div class="container container--wide">
         <div class="hero-grid">
+          @php $hero = $pageSections['hero'] ?? null; @endphp
           <div class="hero-text">
-            <span class="eyebrow"><span class="dot" aria-hidden="true"></span>Perusahaan · est. 2015</span>
-            <h1 class="hero-headline">
-              Satu tim,<br/>
-              <span class="purple">satu visi</span>,<br/>
-              melayani Anda.
-            </h1>
+            <span class="eyebrow"><span class="dot" aria-hidden="true"></span>{{ $hero->subtitle ?? 'Perusahaan · est. 2015' }}</span>
+            <h1 class="hero-headline">{!! $hero->title ?? 'Satu tim,<br/><span class="purple">satu visi</span>,<br/> melayani Anda.' !!}</h1>
             <p class="hero-sub">
-              PHD Trans adalah perusahaan penyewaan bus pariwisata yang berdiri sejak 2015. Berawal dari 3 unit bus, kini kami memiliki lebih dari 50 armada yang siap melayani perjalanan Anda.
+              @if($hero && $hero->description)
+                {!! $hero->description !!}
+              @else
+                PHD Trans adalah perusahaan penyewaan bus pariwisata yang berdiri sejak 2015. Berawal dari 3 unit bus, kini kami memiliki lebih dari 50 armada yang siap melayani perjalanan Anda.
+              @endif
             </p>
             <div class="hero-cta-row">
               <a class="btn btn--primary btn--lg" href="#team">Tim Kami</a>
               <a class="btn btn--ghost btn--lg" href="{{ route('contact') }}">Hubungi Kami</a>
             </div>
             <div class="hero-meta">
-              <span><strong>2015</strong> · Tahun berdiri</span>
-              <span><strong>50+</strong> · Armada</span>
-              <span><strong>25</strong> · Karyawan</span>
+              @php $heroMeta = $hero->metadata ?? null; @endphp
+              @if($heroMeta && is_array($heroMeta))
+                @foreach($heroMeta as $meta)
+                  <span><strong>{{ $meta['value'] ?? '' }}</strong> · {{ $meta['label'] ?? '' }}</span>
+                @endforeach
+              @else
+                <span><strong>2015</strong> · Tahun berdiri</span>
+                <span><strong>50+</strong> · Armada</span>
+                <span><strong>25</strong> · Karyawan</span>
+              @endif
             </div>
           </div>
           <div class="hero-media">
-            <div style="width:100%;height:100%;background:linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);display:flex;align-items:center;justify-content:center;">
-              <span style="font-size:6rem;opacity:0.3;">🏢</span>
-            </div>
+            @php $mType = $hero->media_type ?? 'none'; @endphp
+            @if($mType === 'image' && $hero->media_path)
+              <img src="{{ asset('storage/' . $hero->media_path) }}" alt="{{ $hero->title }}" style="width:100%;height:100%;object-fit:cover;" />
+            @elseif($mType === 'youtube' && $hero->media_url)
+              <iframe src="{{ $hero->getYoutubeEmbedUrl() }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:none;"></iframe>
+            @else
+              <div style="width:100%;height:100%;background:linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);display:flex;align-items:center;justify-content:center;"><span style="font-size:6rem;opacity:0.3;">🏢</span></div>
+            @endif
           </div>
         </div>
       </div>
     </section>
 
     <!-- About Section -->
-    <section id="about">
+    @php $aboutContent = $pageSections['about_content'] ?? null; @endphp
+    <section id="about" class="animate-on-scroll">
       <div class="container container--wide">
         <div class="split">
           <div class="split-text">
-            <span class="eyebrow"><span class="dot" aria-hidden="true"></span>Cerita Kami</span>
-            <h2>Perjalanan<br/>PHD <span class="purple">Trans</span></h2>
+            <span class="eyebrow"><span class="dot" aria-hidden="true"></span>{{ $aboutContent->subtitle ?? 'Cerita Kami' }}</span>
+            <h2>{!! $aboutContent->title ?? 'Perjalanan<br/>PHD <span class="purple">Trans</span>' !!}</h2>
             <p class="lede">
-              Berawal dari kecintaan terhadap dunia transportasi, PHD Trans hadir untuk memberikan solusi perjalanan yang nyaman, aman, dan terjangkau bagi masyarakat Indonesia.
-            </p>
-            <p style="color:var(--fg-soft);">
-              Selama 15 tahun, kami telah melayani ribuan pelanggan — mulai dari study tour sekolah, corporate gathering, family trip, hingga transportasi acara besar. Setiap perjalanan adalah kepercayaan yang kami jaga dengan layanan profesional.
+              @if($aboutContent && $aboutContent->description)
+                {!! $aboutContent->description !!}
+              @else
+                Berawal dari kecintaan terhadap dunia transportasi, PHD Trans hadir untuk memberikan solusi perjalanan yang nyaman, aman, dan terjangkau bagi masyarakat Indonesia.
+              @endif
             </p>
             <div class="hero-cta-row" style="margin-top:var(--space-5);">
               <a class="btn btn--primary" href="{{ route('services') }}">Lihat Layanan</a>
             </div>
           </div>
-          <div class="split-media">
-            <div style="width:100%;height:100%;background:var(--bg-card);display:flex;align-items:center;justify-content:center;border-radius:var(--radius-lg);">
-              <span style="font-size:5rem;opacity:0.3;">🚌</span>
-            </div>
+          <div class="split-media" style="aspect-ratio:4/3;">
+            @if($aboutContent && $aboutContent->media_type === 'image' && $aboutContent->media_path)
+              <img src="{{ asset('storage/' . $aboutContent->media_path) }}" alt="" style="width:100%;height:100%;object-fit:cover;" />
+            @elseif($aboutContent && $aboutContent->media_type === 'video' && $aboutContent->media_path)
+              <video controls style="width:100%;height:100%;object-fit:cover;"><source src="{{ asset('storage/' . $aboutContent->media_path) }}" type="video/mp4"></video>
+            @elseif($aboutContent && $aboutContent->media_type === 'youtube' && $aboutContent->media_url)
+              <iframe src="{{ $aboutContent->getYoutubeEmbedUrl() }}" frameborder="0" allowfullscreen style="width:100%;height:100%;border:none;"></iframe>
+            @else
+              <div style="width:100%;height:100%;background:var(--bg-card);display:flex;align-items:center;justify-content:center;border-radius:var(--radius);"><span style="font-size:4rem;opacity:0.4;">🚌</span></div>
+            @endif
           </div>
         </div>
       </div>
     </section>
 
     <!-- Values -->
-    <section class="tile-section">
-      <div class="container container--wide">
-        <div class="section-head">
-          <h2>Nilai <span style="color:var(--purple);">Kami</span></h2>
-          <p class="lede">Prinsip yang menjadi fondasi setiap layanan yang kami berikan.</p>
-        </div>
-        <div class="process-grid">
-          <div class="process-card" style="background:var(--paper-tile);border-color:rgba(10,10,12,0.1);">
-            <div class="step-num" style="color:var(--purple);">A</div>
-            <h3 style="color:var(--ink-000);">Keselamatan</h3>
-            <p style="color:#2A2A28;">Keselamatan adalah prioritas utama. Setiap bus dilengkapi dengan perlengkapan keselamatan dan menjalani pemeriksaan rutin.</p>
+    @php $valuesSection = $pageSections['values'] ?? null; @endphp
+    @if($valuesSection && $valuesSection->metadata)
+      <section id="team" class="animate-on-scroll">
+        <div class="container container--wide">
+          <div class="section-head">
+            <h2>{!! $valuesSection->title ?? 'Nilai <span class="purple">Kami</span>' !!}</h2>
+            <p class="lede">{{ $valuesSection->subtitle ?? 'Tiga pilar yang menjaga kualitas' }}</p>
           </div>
-          <div class="process-card" style="background:var(--paper-tile);border-color:rgba(10,10,12,0.1);">
-            <div class="step-num" style="color:var(--purple);">B</div>
-            <h3 style="color:var(--ink-000);">Kenyamanan</h3>
-            <p style="color:#2A2A28;">Armada kami dilengkapi fasilitas modern seperti AC, reclining seat, hiburan, dan toilet untuk kenyamanan maksimal.</p>
-          </div>
-          <div class="process-card" style="background:var(--paper-tile);border-color:rgba(10,10,12,0.1);">
-            <div class="step-num" style="color:var(--purple);">C</div>
-            <h3 style="color:var(--ink-000);">Profesionalisme</h3>
-            <p style="color:#2A2A28;">Sopir berpengalaman dan ramah, serta tim customer service yang siap membantu Anda 24/7.</p>
+          <div class="process-grid">
+            @foreach($valuesSection->metadata as $i => $val)
+              <div class="process-card animate-on-scroll" style="background:var(--paper-tile);border-color:rgba(10,10,12,0.1);animation-delay:{{ $i * 100 }}ms;">
+                <div class="step-num" style="color:var(--purple);">{{ $val['icon'] ?? str_pad($i+1,2,'0',STR_PAD_LEFT) }}</div>
+                <h3 style="color:var(--ink-000);">{{ $val['value'] ?? '' }}</h3>
+                <p style="color:#2A2A28;">{{ $val['desc'] ?? '' }}</p>
+              </div>
+            @endforeach
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    @endif
 
     <!-- Stats -->
-    <section class="compact">
-      <div class="container container--wide">
-        <div class="stat-strip">
-          <div class="stat-cell">
-            <span class="stat-num"><span class="purple">15</span></span>
-            <span class="stat-label">Tahun Pengalaman</span>
-          </div>
-          <div class="stat-cell">
-            <span class="stat-num"><span class="purple">50</span>+</span>
-            <span class="stat-label">Armada Bus</span>
-          </div>
-          <div class="stat-cell">
-            <span class="stat-num"><span class="purple">1K</span>+</span>
-            <span class="stat-label">Pelanggan Puas</span>
-          </div>
-          <div class="stat-cell">
-            <span class="stat-num"><span class="purple">25</span></span>
-            <span class="stat-label">Tim Profesional</span>
+    @php $stats = $pageSections['stats'] ?? null; @endphp
+    @if($stats && $stats->metadata)
+      <section class="compact animate-on-scroll">
+        <div class="container container--wide">
+          <div class="stat-strip">
+            @foreach($stats->metadata as $stat)
+              <div class="stat-cell">
+                @php
+                  $statValue = $stat['value'] ?? '';
+                  preg_match('/^([0-9]+)([^0-9]*)$/', $statValue, $m);
+                  $statNum  = $m[1] ?? $statValue;
+                  $statSuffix = $m[2] ?? '';
+                @endphp
+                <span class="stat-num"><span class="purple">{{ $statNum }}</span>{{ $statSuffix }}</span>
+                <span class="stat-label">{{ $stat['label'] ?? '' }}</span>
+              </div>
+            @endforeach
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    @endif
 
     <!-- Closing -->
-    <section class="closing-cta">
+    @php $closing = $pageSections['closing_cta'] ?? null; @endphp
+    <section class="closing-cta animate-on-scroll">
       <div class="container container--narrow">
-        <span class="label" style="color: rgba(244,244,240,0.6);">Bersama PHD Trans</span>
-        <h2>Siap memulai<br/>perjalanan<br/>bersama kami?</h2>
+        <span class="label" style="color: rgba(244,244,240,0.6);">{{ $closing->subtitle ?? 'Bersama PHD Trans' }}</span>
+        <h2>{!! $closing->title ?? 'Siap memulai<br/>perjalanan<br/>bersama kami?' !!}</h2>
         <p class="lede">
-          Hubungi kami untuk konsultasi dan pemesanan. Tim kami siap membantu Anda memilih armada yang tepat.
+          @if($closing && $closing->description)
+            {!! $closing->description !!}
+          @else
+            Hubungi kami untuk konsultasi dan pemesanan. Tim kami siap membantu Anda memilih armada yang tepat.
+          @endif
         </p>
         <div class="cta-row">
           <a class="btn btn--primary btn--lg" href="{{ route('contact') }}">Hubungi Kami

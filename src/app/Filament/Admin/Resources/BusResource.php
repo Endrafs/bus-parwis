@@ -42,14 +42,19 @@ class BusResource extends Resource
                             ->options([
                                 'Big Bus' => 'Big Bus',
                                 'Medium Bus' => 'Medium Bus',
+                                'Big Bus MHD' => 'Big Bus MHD',
+                                'Travel Car' => 'Travel Car',
                             ])
                             ->required(),
 
                         Forms\Components\Select::make('tipe_bus')
                             ->options([
-                                'SHD Single Glass' => 'SHD Single Glass',
-                                'SHD Double Glass' => 'SHD Double Glass',
-                                'Medium' => 'Medium',
+                                'Jetbus 5 SHD Single Glass' => 'Jetbus 5 SHD Single Glass',
+                                'Jetbus 5 SHD' => 'Jetbus 5 SHD',
+                                'Jetbus 3+ Medium High Deck Single Glass' => 'Jetbus 3+ Medium High Deck Single Glass',
+                                'Jetbus 5 Medium Deck' => 'Jetbus 5 Medium Deck',
+                                'Jetbus 5 Jumbo' => 'Jetbus 5 Jumbo',
+                                'Travel' => 'Travel',
                             ])
                             ->required(),
 
@@ -121,6 +126,8 @@ class BusResource extends Resource
                     ->options([
                         'Big Bus' => 'Big Bus',
                         'Medium Bus' => 'Medium Bus',
+                        'Big Bus MHD' => 'Big Bus MHD',
+                        'Travel Car' => 'Travel Car',
                     ]),
 
             ])

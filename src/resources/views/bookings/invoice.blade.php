@@ -7,7 +7,7 @@
   <title>Invoice {{ $booking->kode_booking }} — PHD Trans</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Boldonse&family=Inter+Tight:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter+Tight:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
@@ -36,7 +36,7 @@
           <!-- Invoice Header -->
           <div class="invoice-header" style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid var(--rule);padding-bottom:var(--space-5);margin-bottom:var(--space-6);">
             <div>
-              <span class="brand" style="font-size:var(--text-xl);"><span class="brand-mark" aria-hidden="true"></span> PHD Trans</span>
+              <span class="brand" style="font-size:var(--text-xl);"><img src="{{ asset('images/logo_phd1.png') }}" alt="PHD Trans" class="brand-logo" style="height:1.5rem;" /></span>
               <p style="color:var(--fg-soft);font-size:var(--text-sm);margin-top:var(--space-1);">Invoice Pembayaran Sewa Bus</p>
             </div>
             <div style="text-align:right;">

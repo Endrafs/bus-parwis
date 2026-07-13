@@ -7,7 +7,7 @@
   <title>Pesan {{ $bus->nama_bus }} — PHD Trans</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Boldonse&family=Inter+Tight:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter+Tight:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
@@ -77,10 +77,21 @@
           <div class="form-row form-row--full">
             <div class="form-field">
               <label for="tujuan">Tujuan *</label>
-              <input type="text" name="tujuan" id="tujuan"
-                     placeholder="Contoh: Bandung, Bali, Yogyakarta"
-                     value="{{ old('tujuan') }}"
-                     required />
+              <select name="tujuan" id="tujuan"
+                      x-model="selectedTujuan"
+                      @change="onTujuanChange"
+                      required>
+                <option value="">— Pilih Tujuan —</option>
+                @foreach($destinationPrices as $dp)
+                  <option value="{{ $dp->nama_tujuan }}" data-harga="{{ $dp->harga }}"
+                    {{ old('tujuan') == $dp->nama_tujuan ? 'selected' : '' }}>
+                    {{ $dp->nama_tujuan }} — Rp {{ number_format($dp->harga, 0, ',', '.') }}
+                  </option>
+                @endforeach
+                @if($destinationPrices->isEmpty())
+                  <option value="" disabled>Belum ada data tujuan. Hubungi admin.</option>
+                @endif
+              </select>
               @error('tujuan')<span style="color:#F87171;font-size:var(--text-xs);">{{ $message }}</span>@enderror
             </div>
           </div>
@@ -116,6 +127,10 @@
               <span>Biaya Parkir</span>
               <span x-text="'Rp ' + formatRupiah(biayaParkir)"></span>
             </div>
+            <div class="price-row" x-show="biayaTujuan > 0">
+              <span>Biaya Tujuan</span>
+              <span x-text="'Rp ' + formatRupiah(biayaTujuan)"></span>
+            </div>
             <div class="price-row price-row--total">
               <span>Total Estimasi</span>
               <span x-text="'Rp ' + formatRupiah(totalHarga)"></span>
@@ -148,21 +163,30 @@
         tanggalKembali: '{{ old('tanggal_kembali') }}',
         jumlahHari: 0,
         totalHarga: 0,
+        selectedTujuan: '{{ old('tujuan') }}',
         biayaTol: biayaTambahan.biayaTol || 0,
         biayaSolar: biayaTambahan.biayaSolar || 0,
         tipsCrew: biayaTambahan.tipsCrew || 0,
         biayaParkir: biayaTambahan.biayaParkir || 0,
+        biayaTujuan: 0,
         hitung() {
           if (this.tanggalBerangkat && this.tanggalKembali) {
             const start = new Date(this.tanggalBerangkat);
             const end = new Date(this.tanggalKembali);
             const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
             this.jumlahHari = diff > 0 ? diff : 0;
-            this.totalHarga = (this.jumlahHari * hargaPerHari) + this.biayaTol + this.biayaSolar + this.tipsCrew + this.biayaParkir;
+            this.totalHarga = (this.jumlahHari * hargaPerHari) + this.biayaTol + this.biayaSolar + this.tipsCrew + this.biayaParkir + this.biayaTujuan;
           } else {
             this.jumlahHari = 0;
             this.totalHarga = 0;
           }
+        },
+        onTujuanChange() {
+          const select = document.getElementById('tujuan');
+          const selectedOption = select.options[select.selectedIndex];
+          const harga = selectedOption ? parseFloat(selectedOption.getAttribute('data-harga') || '0') : 0;
+          this.biayaTujuan = isNaN(harga) ? 0 : harga;
+          this.hitung();
         },
         formatRupiah(num) {
           return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -170,6 +194,22 @@
       }));
     });
 
+    // On page load, set initial biayaTujuan if there's a pre-selected destination
+    document.addEventListener('DOMContentLoaded', function() {
+      const select = document.getElementById('tujuan');
+      if (select && select.value) {
+        const selectedOption = select.options[select.selectedIndex];
+        const harga = selectedOption ? parseFloat(selectedOption.getAttribute('data-harga') || '0') : 0;
+        // We need to set this on the Alpine component after it initializes
+        setTimeout(() => {
+          const event = new Event('change');
+          select.dispatchEvent(event);
+        }, 100);
+      }
+    });
+  </script>
+
+  <script>
     // Mobile drawer
     document.addEventListener('DOMContentLoaded', function() {
       const toggle = document.querySelector('.nav-toggle');

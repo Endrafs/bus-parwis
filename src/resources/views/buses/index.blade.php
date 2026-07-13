@@ -8,73 +8,40 @@
   <meta name="description" content="PHD Trans — Penyewaan bus pariwisata terpercaya dengan armada Big Bus & Medium Bus berkualitas." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Boldonse&family=Inter+Tight:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300..700&family=JetBrains+Mono:wght@400..600&display=swap" />
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
+  <div class="particle-container" aria-hidden="true">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  </div>
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <header class="site-header">
-    <div class="container container--wide">
-      <nav class="nav" aria-label="Primary">
-        <a class="brand" href="{{ route('home') }}"><span class="brand-mark" aria-hidden="true"></span> {{ $websiteSettings->nama_website ?? 'PHD Trans' }}</a>
-        <div class="nav-links" role="navigation">
-          <a href="{{ route('home') }}" aria-current="page">Armada</a>
-          <a href="{{ route('about') }}">Tentang</a>
-          <a href="{{ route('services') }}">Layanan</a>
-          <a href="{{ route('contact') }}">Kontak</a>
-        </div>
-        <div class="nav-cta-row">
-          @auth
-            <a href="{{ route('booking.index') }}" class="btn btn--primary btn--sm">Booking Saya
-              <svg class="arrow" width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true"><path d="M1 5h12m0 0L9 1m4 4L9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          @else
-            <a href="{{ route('register') }}" class="btn btn--primary btn--sm">Daftar
-              <svg class="arrow" width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true"><path d="M1 5h12m0 0L9 1m4 4L9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          @endauth
-          <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer"><span aria-hidden="true"></span></button>
-        </div>
-      </nav>
-    </div>
-  </header>
-
-  <div class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
-    <button class="drawer-close" aria-label="Close menu">Close</button>
-    <a href="{{ route('home') }}">Armada</a>
-    <a href="{{ route('about') }}">Tentang</a>
-    <a href="{{ route('services') }}">Layanan</a>
-    <a href="{{ route('contact') }}">Kontak</a>
-    <hr class="divider" style="margin-block: var(--space-4);">
-    @auth
-      <a href="{{ route('booking.index') }}">Booking Saya</a>
-      <a href="{{ route('dashboard') }}">Dashboard</a>
-      <form method="POST" action="{{ route('logout') }}" style="margin-top:auto;">
-        @csrf
-        <button type="submit" class="btn btn--ghost btn--sm" style="width:100%;">Logout</button>
-      </form>
-    @else
-      <a href="{{ route('login') }}">Login</a>
-      <a href="{{ route('register') }}">Daftar</a>
-    @endauth
-  </div>
+  @include('partials.public-header')
 
   <main id="main">
 
     <!-- Hero -->
-    <section class="hero">
+    <section class="hero animate-on-scroll">
       <div class="container container--wide">
         <div class="hero-grid">
           <div class="hero-text">
+            @php
+              $hero = $pageSections['hero'] ?? null;
+            @endphp
             <span class="eyebrow"><span class="dot" aria-hidden="true"></span>{{ $websiteSettings->nama_website ?? 'PHD Trans' }} · est. 2015</span>
             <h1 class="hero-headline">
-              Sewa Bus<br/>
-              <span class="purple">Pariwisata</span> Nyaman<br/>
-              & Terpercaya
+              {!! $hero->title ?? 'Sewa Bus<br><span class="purple">Pariwisata</span> Nyaman<br>&amp; Terpercaya' !!}
             </h1>
             <p class="hero-sub">
-              {{ $websiteSettings->deskripsi ?? 'PHD Trans menyediakan armada Big Bus & Medium Bus berkualitas dengan fasilitas modern. Booking mudah, harga transparan, dan pengalaman perjalanan yang tak terlupakan.' }}
+              @if($hero && $hero->description)
+                {!! $hero->description !!}
+              @else
+                {{ $websiteSettings->deskripsi ?? 'PHD Trans menyediakan armada Big Bus & Medium Bus berkualitas dengan fasilitas modern. Booking mudah, harga transparan, dan pengalaman perjalanan yang tak terlupakan.' }}
+              @endif
             </p>
             <div class="hero-cta-row">
               <a class="btn btn--primary btn--lg" href="#bus-list">Lihat Armada
@@ -83,15 +50,38 @@
               <a class="btn btn--ghost btn--lg" href="{{ route('services') }}">Cara Sewa</a>
             </div>
             <div class="hero-meta">
-              <span><strong>50+</strong> · Armada Tersedia</span>
-              <span><strong>1000+</strong> · Pelanggan Puas</span>
-              <span><strong>15</strong> · Tahun Pengalaman</span>
+              @php
+                $heroMeta = $hero->metadata ?? null;
+              @endphp
+              @if($heroMeta && is_array($heroMeta))
+                @foreach($heroMeta as $meta)
+                  <span><strong>{{ $meta['value'] ?? '' }}</strong> · {{ $meta['label'] ?? '' }}</span>
+                @endforeach
+              @else
+                <span><strong>50+</strong> · Armada Tersedia</span>
+                <span><strong>1000+</strong> · Pelanggan Puas</span>
+                <span><strong>15</strong> · Tahun Pengalaman</span>
+              @endif
             </div>
           </div>
           <div class="hero-media">
-            <div style="width:100%;height:100%;background:linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);display:flex;align-items:center;justify-content:center;">
-              <span style="font-size:6rem;opacity:0.3;">🚌</span>
-            </div>
+            @php
+              $heroSection = $pageSections['hero'] ?? null;
+              $mediaType = $heroSection->media_type ?? 'none';
+            @endphp
+            @if($mediaType === 'image' && $heroSection->media_path)
+              <img src="{{ asset('storage/' . $heroSection->media_path) }}" alt="{{ $heroSection->title ?? 'Hero' }}" style="width:100%;height:100%;object-fit:cover;" />
+            @elseif($mediaType === 'video' && $heroSection->media_path)
+              <video autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;">
+                <source src="{{ asset('storage/' . $heroSection->media_path) }}" type="video/mp4">
+              </video>
+            @elseif($mediaType === 'youtube' && $heroSection->media_url)
+              <iframe src="{{ $heroSection->getYoutubeEmbedUrl() ?? $heroSection->media_url }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:none;"></iframe>
+            @else
+              <div style="width:100%;height:100%;background:linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);display:flex;align-items:center;justify-content:center;">
+                <span style="font-size:6rem;opacity:0.3;">🚌</span>
+              </div>
+            @endif
             <div class="floating-tag ft-top">
               <span class="pill">Mulai</span>
               <span>Rp 2.5jt/hari</span>
@@ -105,31 +95,36 @@
     </section>
 
     <!-- Fleet Stats -->
-    <section class="compact">
+    <section class="compact animate-on-scroll">
       <div class="container container--wide">
         <div class="stat-strip">
+          @php
+            $statsSection = $pageSections['stats'] ?? null;
+            $stats = $statsSection->metadata ?? [
+              ['value' => '50', 'label' => 'Armada Bus'],
+              ['value' => '15', 'label' => 'Tahun Pengalaman'],
+              ['value' => '1000', 'label' => 'Pelanggan Puas'],
+              ['value' => '99%', 'label' => 'Tepat Waktu'],
+            ];
+          @endphp
+          @foreach($stats as $stat)
           <div class="stat-cell">
-            <span class="stat-num"><span class="purple">50</span>+</span>
-            <span class="stat-label">Armada Bus</span>
+            @php
+              $statValue = $stat['value'] ?? '';
+              preg_match('/^([0-9]+)([^0-9]*)$/', $statValue, $m);
+              $statNum  = $m[1] ?? $statValue;
+              $statSuffix = $m[2] ?? '';
+            @endphp
+            <span class="stat-num"><span class="purple">{{ $statNum }}</span>{{ $statSuffix }}</span>
+            <span class="stat-label">{{ $stat['label'] ?? '' }}</span>
           </div>
-          <div class="stat-cell">
-            <span class="stat-num"><span class="purple">15</span></span>
-            <span class="stat-label">Tahun Pengalaman</span>
-          </div>
-          <div class="stat-cell">
-            <span class="stat-num"><span class="purple">1K</span>+</span>
-            <span class="stat-label">Pelanggan Puas</span>
-          </div>
-          <div class="stat-cell">
-            <span class="stat-num"><span class="purple">99</span>%</span>
-            <span class="stat-label">Tepat Waktu</span>
-          </div>
+          @endforeach
         </div>
       </div>
     </section>
 
     <!-- Bus List -->
-    <section id="bus-list">
+    <section id="bus-list" class="animate-on-scroll">
       <div class="container container--wide">
         <div class="section-head">
           <h2>Armada <span class="purple">Kami</span></h2>
@@ -177,39 +172,62 @@
     </section>
 
     <!-- Why Choose Us -->
-    <section class="tile-section">
+    <section class="tile-section animate-on-scroll">
       <div class="container container--wide">
         <div class="section-head">
           <h2>Mengapa <span style="color:var(--purple);">PHD Trans?</span></h2>
           <p class="lede">Kami berkomitmen memberikan layanan penyewaan bus terbaik untuk perjalanan Anda.</p>
         </div>
-        <div class="process-grid">
-          <div class="process-card" style="background:var(--paper-tile);border-color:rgba(10,10,12,0.1);">
-            <div class="step-num" style="color:var(--purple);">01</div>
-            <h3 style="color:var(--ink-000);">Armada Terawat</h3>
-            <p style="color:#2A2A28;">Setiap unit bus menjalani pemeriksaan rutin untuk memastikan keamanan dan kenyamanan perjalanan Anda.</p>
+        @php
+          $valuesSection = $pageSections['values'] ?? null;
+          $values = $valuesSection->metadata ?? null;
+        @endphp
+        @if($values && is_array($values))
+          <div class="process-grid">
+            @foreach($values as $i => $val)
+              <div class="process-card animate-on-scroll" style="background:var(--paper-tile);border-color:rgba(10,10,12,0.1);animation-delay:{{ $i * 100 }}ms;">
+                <div class="step-num" style="color:var(--purple);">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</div>
+                <h3 style="color:var(--ink-000);">{{ $val['value'] ?? '' }}</h3>
+                <p style="color:#2A2A28;">{{ $val['desc'] ?? '' }}</p>
+              </div>
+            @endforeach
           </div>
-          <div class="process-card" style="background:var(--paper-tile);border-color:rgba(10,10,12,0.1);">
-            <div class="step-num" style="color:var(--purple);">02</div>
-            <h3 style="color:var(--ink-000);">Harga Transparan</h3>
-            <p style="color:#2A2A28;">Tidak ada biaya tersembunyi. Harga yang tertera adalah harga yang Anda bayar.</p>
+        @else
+          <div class="process-grid">
+            <div class="process-card" style="background:var(--paper-tile);border-color:rgba(10,10,12,0.1);">
+              <div class="step-num" style="color:var(--purple);">01</div>
+              <h3 style="color:var(--ink-000);">Armada Terawat</h3>
+              <p style="color:#2A2A28;">Setiap unit bus menjalani pemeriksaan rutin untuk memastikan keamanan dan kenyamanan perjalanan Anda.</p>
+            </div>
+            <div class="process-card" style="background:var(--paper-tile);border-color:rgba(10,10,12,0.1);">
+              <div class="step-num" style="color:var(--purple);">02</div>
+              <h3 style="color:var(--ink-000);">Harga Transparan</h3>
+              <p style="color:#2A2A28;">Tidak ada biaya tersembunyi. Harga yang tertera adalah harga yang Anda bayar.</p>
+            </div>
+            <div class="process-card" style="background:var(--paper-tile);border-color:rgba(10,10,12,0.1);">
+              <div class="step-num" style="color:var(--purple);">03</div>
+              <h3 style="color:var(--ink-000);">Booking Mudah</h3>
+              <p style="color:#2A2A28;">Sistem booking online yang cepat dan praktis. Pesan bus favorit Anda kapan saja.</p>
+            </div>
           </div>
-          <div class="process-card" style="background:var(--paper-tile);border-color:rgba(10,10,12,0.1);">
-            <div class="step-num" style="color:var(--purple);">03</div>
-            <h3 style="color:var(--ink-000);">Booking Mudah</h3>
-            <p style="color:#2A2A28;">Sistem booking online yang cepat dan praktis. Pesan bus favorit Anda kapan saja.</p>
-          </div>
-        </div>
+        @endif
       </div>
     </section>
 
     <!-- Closing CTA -->
-    <section class="closing-cta">
+    <section class="closing-cta animate-on-scroll">
       <div class="container container--narrow">
-        <span class="label" style="color: rgba(244,244,240,0.6);">Booking · {{ date('Y') }}</span>
-        <h2>Siap untuk<br/>perjalanan yang<br/>nyaman?</h2>
+        @php
+          $closing = $pageSections['closing_cta'] ?? null;
+        @endphp
+        <span class="label" style="color: rgba(244,244,240,0.6);">{{ $closing->subtitle ?? 'Booking · ' . date('Y') }}</span>
+        <h2>{!! $closing->title ?? 'Siap untuk<br/>perjalanan yang<br/>nyaman?' !!}</h2>
         <p class="lede">
-          Pesan armada bus sekarang dan nikmati pengalaman perjalanan bersama PHD Trans. Kami siap melayani Anda dengan armada terbaik.
+          @if($closing && $closing->description)
+            {!! $closing->description !!}
+          @else
+            Pesan armada bus sekarang dan nikmati pengalaman perjalanan bersama PHD Trans. Kami siap melayani Anda dengan armada terbaik.
+          @endif
         </p>
         <div class="cta-row">
           <a class="btn btn--primary btn--lg" href="{{ route('register') }}">Mulai Pesan
@@ -220,54 +238,51 @@
       </div>
     </section>
 
+    <!-- Gallery Section (if any page section has gallery type) -->
+    @php
+      $gallerySection = $pageSections['gallery'] ?? $pageSections['media_feature'] ?? null;
+    @endphp
+    @if($gallerySection && $gallerySection->media_type === 'gallery' && $gallerySection->is_active)
+      <section class="tile-section animate-on-scroll">
+        <div class="container container--wide">
+          <div class="section-head">
+            <h2>{!! $gallerySection->title ?? 'Galeri <span class="purple">Armada</span>' !!}</h2>
+            @if($gallerySection->description)
+              <p class="lede">{!! $gallerySection->description !!}</p>
+            @endif
+          </div>
+          @include('partials.section-gallery', ['section' => $gallerySection, 'animate' => false])
+        </div>
+      </section>
+    @elseif($gallerySection && $gallerySection->media_type !== 'none' && $gallerySection->is_active)
+      <section class="tile-section animate-on-scroll">
+        <div class="container container--wide">
+          <div class="section-head">
+            <h2>{!! $gallerySection->title ?? 'Lihat <span class="purple">Armada</span> Kami' !!}</h2>
+            @if($gallerySection->description)
+              <p class="lede">{!! $gallerySection->description !!}</p>
+            @endif
+          </div>
+          <div class="split">
+            <div class="split-media" style="aspect-ratio:16/9;">
+              @if($gallerySection->media_type === 'image' && $gallerySection->media_path)
+                <img src="{{ asset('storage/' . $gallerySection->media_path) }}" alt="{{ $gallerySection->title }}" style="width:100%;height:100%;object-fit:cover;" />
+              @elseif($gallerySection->media_type === 'video' && $gallerySection->media_path)
+                <video controls style="width:100%;height:100%;object-fit:cover;">
+                  <source src="{{ asset('storage/' . $gallerySection->media_path) }}" type="video/mp4">
+                </video>
+              @elseif($gallerySection->media_type === 'youtube' && $gallerySection->media_url)
+                <iframe src="{{ $gallerySection->getYoutubeEmbedUrl() }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:none;"></iframe>
+              @endif
+            </div>
+          </div>
+        </div>
+      </section>
+    @endif
+
   </main>
 
-  <footer class="site-footer">
-    <div class="container container--wide">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <span class="brand"><span class="brand-mark" aria-hidden="true"></span> {{ $websiteSettings->nama_website ?? 'PHD Trans' }}</span>
-          <p>Penyedia layanan penyewaan bus pariwisata terpercaya sejak 2015. Armada lengkap, harga transparan, pelayanan profesional.</p>
-          @if($websiteSettings && $websiteSettings->nomor_whatsapp)
-            <span class="label">{{ $websiteSettings->nomor_whatsapp }}</span>
-          @endif
-        </div>
-        <div>
-          <h4>Layanan</h4>
-          <ul>
-            <li><a href="{{ route('home') }}">Armada</a></li>
-            <li><a href="{{ route('services') }}">Cara Sewa</a></li>
-            <li><a href="{{ route('services') }}#harga">Harga</a></li>
-            <li><a href="{{ route('services') }}#faq">FAQ</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Perusahaan</h4>
-          <ul>
-            <li><a href="{{ route('about') }}">Tentang</a></li>
-            <li><a href="{{ route('contact') }}">Kontak</a></li>
-            <li><a href="#">Syarat & Ketentuan</a></li>
-            <li><a href="#">Kebijakan Privasi</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Pelanggan</h4>
-          <ul>
-            <li><a href="{{ route('login') }}">Login</a></li>
-            <li><a href="{{ route('register') }}">Daftar</a></li>
-            <li><a href="{{ route('contact') }}">Bantuan</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span>© {{ date('Y') }} {{ $websiteSettings->nama_website ?? 'PHD Trans' }} · All rights reserved.</span>
-        <div class="footer-meta-links">
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
-        </div>
-      </div>
-    </div>
-  </footer>
+  @include('partials.public-footer')
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {

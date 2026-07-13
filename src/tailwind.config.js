@@ -12,9 +12,9 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Inter Tight', ...defaultTheme.fontFamily.sans],
-                display: ['Boldonse', 'Inter Tight', ...defaultTheme.fontFamily.sans],
-                mono: ['Geist Mono', 'IBM Plex Mono', ...defaultTheme.fontFamily.mono],
+                sans: ['Plus Jakarta Sans', ...defaultTheme.fontFamily.sans],
+                display: ['Montserrat', ...defaultTheme.fontFamily.sans],
+                mono: ['JetBrains Mono', ...defaultTheme.fontFamily.mono],
             },
             colors: {
                 ink: {

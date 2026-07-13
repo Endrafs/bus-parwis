@@ -7,13 +7,13 @@
   <title>Login — PHD Trans</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Boldonse&family=Inter+Tight:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter+Tight:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body style="background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--space-5);">
   <div style="width:100%;max-width:440px;">
     <div style="text-align:center;margin-bottom:var(--space-7);">
-      <a href="{{ route('home') }}" class="brand" style="display:inline-flex;font-size:var(--text-2xl);justify-content:center;"><span class="brand-mark" aria-hidden="true"></span> PHD Trans</a>
+      <a href="{{ route('home') }}" class="brand" style="display:inline-flex;justify-content:center;"><img src="{{ asset('images/logo_phd1.png') }}" alt="PHD Trans" class="brand-logo" /></a>
     </div>
 
     <div class="form-card">

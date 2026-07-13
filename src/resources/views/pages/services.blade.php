@@ -8,187 +8,122 @@
   <meta name="description" content="Layanan penyewaan bus PHD Trans — Big Bus, Medium Bus, dengan sopir profesional. Harga transparan." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Boldonse&family=Inter+Tight:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300..700&family=JetBrains+Mono:wght@400..600&display=swap" />
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
+  <div class="particle-container" aria-hidden="true">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  </div>
   @include('partials.public-header')
 
   <main id="main">
-
     <!-- Hero -->
-    <section class="hero">
+    <section class="hero animate-on-scroll">
       <div class="container container--wide">
         <div class="hero-grid">
+          @php $hero = $pageSections['hero'] ?? null; @endphp
           <div class="hero-text">
-            <span class="eyebrow"><span class="dot" aria-hidden="true"></span>Dua tipe · Satu layanan</span>
-            <h1 class="hero-headline">
-              Dua pilihan<br/>
-              <span class="purple">armada,</span> satu<br/>
-              standar kualitas.
-            </h1>
+            <span class="eyebrow"><span class="dot" aria-hidden="true"></span>{{ $hero->subtitle ?? 'Dua tipe · Satu layanan' }}</span>
+            <h1 class="hero-headline">{!! $hero->title ?? 'Dua pilihan<br/><span class="purple">armada,</span> satu<br/> standar kualitas.' !!}</h1>
             <p class="hero-sub">
-              Kami menawarkan Big Bus dan Medium Bus dengan harga yang transparan. Yang perlu Anda lakukan adalah pilih armada, tentukan tanggal, dan nikmati perjalanan.
+              @if($hero && $hero->description)
+                {!! $hero->description !!}
+              @else
+                Kami menawarkan Big Bus dan Medium Bus dengan harga yang transparan. Yang perlu Anda lakukan adalah pilih armada, tentukan tanggal, dan nikmati perjalanan.
+              @endif
             </p>
             <div class="hero-cta-row">
               <a class="btn btn--primary btn--lg" href="#harga">Lihat Harga</a>
               <a class="btn btn--ghost btn--lg" href="#proses">Cara Sewa</a>
             </div>
             <div class="hero-meta">
-              <span><strong>2</strong> Tipe Armada</span>
-              <span><strong>50+</strong> Unit Tersedia</span>
+              @php $heroMeta = $hero->metadata ?? null; @endphp
+              @if($heroMeta && is_array($heroMeta))
+                @foreach($heroMeta as $meta)
+                  <span><strong>{{ $meta['value'] ?? '' }}</strong> {{ $meta['label'] ?? '' }}</span>
+                @endforeach
+              @else
+                <span><strong>2</strong> Tipe Armada</span>
+                <span><strong>50+</strong> Unit Tersedia</span>
+              @endif
             </div>
           </div>
           <div class="hero-media">
-            <div style="width:100%;height:100%;background:linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);display:flex;align-items:center;justify-content:center;">
-              <span style="font-size:6rem;opacity:0.3;">🚌</span>
-            </div>
+            @php $mType = $hero->media_type ?? 'none'; @endphp
+            @if($mType === 'image' && $hero->media_path)
+              <img src="{{ asset('storage/' . $hero->media_path) }}" alt="{{ $hero->title }}" style="width:100%;height:100%;object-fit:cover;" />
+            @elseif($mType === 'youtube' && $hero->media_url)
+              <iframe src="{{ $hero->getYoutubeEmbedUrl() }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="width:100%;height:100%;border:none;"></iframe>
+            @else
+              <div style="width:100%;height:100%;background:linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);display:flex;align-items:center;justify-content:center;"><span style="font-size:6rem;opacity:0.3;">🚌</span></div>
+            @endif
           </div>
         </div>
       </div>
     </section>
 
     <!-- Process -->
-    <section id="proses">
-      <div class="container container--wide">
-        <div class="section-head">
-          <h2>Cara <span class="purple">Sewa</span></h2>
-          <p class="lede">Proses penyewaan bus di PHD Trans mudah dan cepat. Hanya 4 langkah sederhana.</p>
+    @php $process = $pageSections['process'] ?? null; @endphp
+    @if($process)
+      <section id="proses" class="animate-on-scroll">
+        <div class="container container--wide">
+          <div class="section-head">
+            <h2>{!! $process->title ?? 'Cara <span class="purple">Sewa</span>' !!}</h2>
+            <p class="lede">{{ $process->subtitle ?? 'Proses penyewaan bus di PHD Trans mudah dan cepat.' }}</p>
+          </div>
+          @php $steps = $process->metadata ?? []; @endphp
+          @if($steps && is_array($steps))
+            <div class="process-grid">
+              @foreach($steps as $i => $step)
+                <div class="process-card animate-on-scroll" style="animation-delay:{{ $i * 100 }}ms;">
+                  <div class="step-num">{{ $step['step'] ?? str_pad($i+1,2,'0',STR_PAD_LEFT) }}</div>
+                  <h3>{{ $step['value'] ?? '' }}</h3>
+                  <p>{{ $step['desc'] ?? '' }}</p>
+                </div>
+              @endforeach
+            </div>
+          @endif
         </div>
-        <div class="process-grid">
-          <div class="process-card">
-            <div class="step-num">01</div>
-            <h3>Pilih Armada</h3>
-            <p>Jelajahi koleksi armada Big Bus dan Medium Bus kami. Setiap unit dilengkapi informasi detail, fasilitas, dan harga sewa per hari.</p>
-          </div>
-          <div class="process-card">
-            <div class="step-num">02</div>
-            <h3>Pesan & Bayar</h3>
-            <p>Isi form booking dengan tanggal, tujuan, dan detail perjalanan. Lakukan pembayaran DP atau pelunasan melalui transfer bank.</p>
-          </div>
-          <div class="process-card">
-            <div class="step-num">03</div>
-            <h3>Verifikasi</h3>
-            <p>Tim admin kami akan memverifikasi pembayaran dan booking Anda. Status akan berubah menjadi "Dikonfirmasi" setelah disetujui.</p>
-          </div>
-          <div class="process-card">
-            <div class="step-num">04</div>
-            <h3>Nikmati Perjalanan</h3>
-            <p>Bus siap digunakan sesuai jadwal. Sopir profesional kami akan memastikan perjalanan Anda aman dan nyaman.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Pricing -->
-    <section id="harga" class="tile-section">
-      <div class="container container--wide">
-        <div class="section-head">
-          <h2>Harga <span style="color:var(--purple);">Sewa</span></h2>
-          <p class="lede">Harga sudah termasuk sopir, bahan bakar, dan fasilitas standar. Transparan tanpa biaya tersembunyi.</p>
-        </div>
-        <div class="tier-grid">
-          <div class="tier-card" style="background:var(--paper-tile);">
-            <span class="label">Mulai dari</span>
-            <h3 style="color:var(--ink-000);">Medium Bus</h3>
-            <div class="tier-meta" style="color:#2A2A28;">Kapasitas 20–30 orang</div>
-            <hr class="tier-divider" />
-            <ul class="tier-list">
-              <li>AC Dingin & Non-Merokok</li>
-              <li>Reclining Seat Nyaman</li>
-              <li>Audio System & Mic</li>
-              <li>Sopir Berpengalaman</li>
-              <li>Bahan Bakar Termasuk</li>
-            </ul>
-            <hr class="tier-divider" />
-            <div class="tier-meta" style="color:var(--ink-000);font-size:var(--text-xl);font-family:var(--font-display);">Mulai Rp 2.500.000</div>
-            <div class="tier-meta" style="color:#2A2A28;">/ hari</div>
-            <a href="{{ route('home') }}" class="btn btn--dark" style="width:100%;justify-content:center;margin-top:auto;">Lihat Armada</a>
-          </div>
-
-          <div class="tier-card featured" style="background:var(--paper-tile);border:2px solid var(--purple);">
-            <span class="label" style="color:var(--purple);">⭐ Paling Populer</span>
-            <h3 style="color:var(--ink-000);">Big Bus</h3>
-            <div class="tier-meta" style="color:#2A2A28;">Kapasitas 40–59 orang</div>
-            <hr class="tier-divider" />
-            <ul class="tier-list">
-              <li>AC Dingin & Non-Merokok</li>
-              <li>Reclining Seat Legowo</li>
-              <li>Toilet & Audio System</li>
-              <li>TV & Karaoke</li>
-              <li>Sopir & Kernet Profesional</li>
-              <li>Bahan Bakar Termasuk</li>
-            </ul>
-            <hr class="tier-divider" />
-            <div class="tier-meta" style="color:var(--ink-000);font-size:var(--text-xl);font-family:var(--font-display);">Mulai Rp 3.500.000</div>
-            <div class="tier-meta" style="color:#2A2A28;">/ hari</div>
-            <a href="{{ route('home') }}" class="btn btn--primary" style="width:100%;justify-content:center;margin-top:auto;">Lihat Armada</a>
-          </div>
-
-          <div class="tier-card" style="background:var(--paper-tile);">
-            <span class="label">Paket Khusus</span>
-            <h3 style="color:var(--ink-000);">Custom Trip</h3>
-            <div class="tier-meta" style="color:#2A2A28;">Sesuai kebutuhan Anda</div>
-            <hr class="tier-divider" />
-            <ul class="tier-list">
-              <li>Multi Hari / Drop Off</li>
-              <li>Rute Luar Kota/Pulau</li>
-              <li>Penginapan Sopir</li>
-              <li>Request Jadwal Kustom</li>
-              <li>Event & Wedding</li>
-            </ul>
-            <hr class="tier-divider" />
-            <div class="tier-meta" style="color:var(--ink-000);font-size:var(--text-xl);font-family:var(--font-display);">Hubungi Kami</div>
-            <div class="tier-meta" style="color:#2A2A28;">Negosiasi</div>
-            <a href="{{ route('contact') }}" class="btn btn--dark" style="width:100%;justify-content:center;margin-top:auto;">Hubungi Kami</a>
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
+    @endif
 
     <!-- FAQ -->
-    <section id="faq" class="snug">
-      <div class="container container--narrow">
-        <div style="text-align:center;margin-bottom:var(--space-7);">
-          <span class="eyebrow" style="display:inline-flex;"><span class="dot" aria-hidden="true"></span>FAQ</span>
-          <h2 style="margin-top:var(--space-3);">Pertanyaan <span class="purple">Umum</span></h2>
-        </div>
-        <div class="faq-grid">
-          <div class="faq-card">
-            <h3>Bagaimana cara booking?</h3>
-            <p>Daftar/login akun, pilih armada, isi form booking dengan tanggal dan tujuan, lalu lakukan pembayaran.</p>
+    @php $faq = $pageSections['faq'] ?? null; @endphp
+    @if($faq && $faq->metadata)
+      <section id="faq" class="animate-on-scroll">
+        <div class="container container--wide">
+          <div class="section-head">
+            <h2>{!! $faq->title ?? 'Pertanyaan <span class="purple">Umum</span>' !!}</h2>
+            <p class="lede">{{ $faq->subtitle ?? 'Jawaban cepat untuk pertanyaan yang sering diajukan.' }}</p>
           </div>
-          <div class="faq-card">
-            <h3>Apa saja yang termasuk harga sewa?</h3>
-            <p>Harga sudah termasuk sopir, bahan bakar, dan fasilitas standar bus. Biaya tol dan parkir ditanggung penyewa.</p>
-          </div>
-          <div class="faq-card">
-            <h3>Berapa deposit yang harus dibayar?</h3>
-            <p>Minimal DP 50% dari total harga. Pelunasan dapat dilakukan H-1 atau di hari keberangkatan.</p>
-          </div>
-          <div class="faq-card">
-            <h3>Apakah bisa booking untuk perjalanan multi-hari?</h3>
-            <p>Tentu. Kami melayani perjalanan multi-hari. Harga dihitung per hari dengan paket khusus.</p>
-          </div>
-          <div class="faq-card">
-            <h3>Apakah sopir sudah termasuk?</h3>
-            <p>Ya, semua paket sudah termasuk sopir profesional dan ramah. Untuk Big Bus termasuk kernet.</p>
-          </div>
-          <div class="faq-card">
-            <h3>Bagaimana jika booking dibatalkan?</h3>
-            <p>Pembatalan H-7: DP dikembalikan 50%. H-3: tidak dapat refund. Hubungi admin untuk info detail.</p>
+          <div class="faq-grid">
+            @foreach($faq->metadata as $item)
+              <div class="faq-card">
+                <h3>{{ $item['q'] ?? '' }}</h3>
+                <p>{{ $item['a'] ?? '' }}</p>
+              </div>
+            @endforeach
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    @endif
 
     <!-- Closing -->
-    <section class="closing-cta">
+    @php $closing = $pageSections['closing_cta'] ?? null; @endphp
+    <section class="closing-cta animate-on-scroll">
       <div class="container container--narrow">
-        <span class="label" style="color: rgba(244,244,240,0.6);">Booking · {{ date('Y') }}</span>
-        <h2>Ada pertanyaan<br/>lain? Tanya<br/>kami saja.</h2>
+        <span class="label" style="color: rgba(244,244,240,0.6);">{{ $closing->subtitle ?? 'Booking · ' . date('Y') }}</span>
+        <h2>{!! $closing->title ?? 'Ada pertanyaan<br/>lain? Tanya<br/>kami saja.' !!}</h2>
         <p class="lede">
-          Tim kami siap membantu Anda memilih armada yang tepat dan menjawab semua pertanyaan Anda.
+          @if($closing && $closing->description)
+            {!! $closing->description !!}
+          @else
+            Tim kami siap membantu Anda memilih armada yang tepat dan menjawab semua pertanyaan Anda.
+          @endif
         </p>
         <div class="cta-row">
           <a class="btn btn--primary btn--lg" href="{{ route('contact') }}">Hubungi Kami

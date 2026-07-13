@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bus;
+use App\Models\PageSection;
 use App\Models\WebsiteSetting;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -21,7 +22,11 @@ class BusController extends Controller
 
         $websiteSettings = WebsiteSetting::first();
 
-        return view('buses.index', compact('buses', 'websiteSettings'));
+        $pageSections = PageSection::forPage('home')
+            ->get()
+            ->keyBy('section_key');
+
+        return view('buses.index', compact('buses', 'websiteSettings', 'pageSections'));
     }
 
     /**

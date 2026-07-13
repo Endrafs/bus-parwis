@@ -24,9 +24,9 @@ class BookingController extends Controller
             ->where('status', true)
             ->findOrFail($request->query('bus_id'));
 
-        $websiteSettings = WebsiteSetting::first();
+        $destinationPrices = DestinationPrice::orderBy('nama_tujuan')->get();
 
-        return view('bookings.create', compact('bus', 'websiteSettings'));
+        return view('bookings.create', compact('bus', 'destinationPrices'));
     }
 
     /**

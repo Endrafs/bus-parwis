@@ -2,9 +2,13 @@
   <div class="container container--wide">
     <div class="footer-top">
       <div class="footer-brand">
-        <span class="brand"><span class="brand-mark" aria-hidden="true"></span> PHD Trans</span>
+        <span class="brand"><img src="{{ asset('images/logo_phd2.png') }}" alt="PHD Trans" class="brand-logo" /></span>
         <p>Penyedia layanan penyewaan bus pariwisata terpercaya sejak 2015. Armada lengkap, harga transparan, pelayanan profesional.</p>
-        <span class="label">Senin — Sabtu · 08:00 – 20:00</span>
+        @if(isset($websiteSettings) && $websiteSettings->nomor_whatsapp)
+          <span class="label">{{ $websiteSettings->nomor_whatsapp }}</span>
+        @else
+          <span class="label">Senin — Sabtu · 08:00 – 20:00</span>
+        @endif
       </div>
       <div>
         <h4>Layanan</h4>
@@ -34,9 +38,9 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© {{ date('Y') }} PHD Trans · All rights reserved.</span>
+      <span>© {{ date('Y') }} <img src="{{ asset('images/logo_phd2.png') }}" alt="PHD Trans" class="brand-logo-inline" /> · All rights reserved.</span>
       <div class="footer-meta-links">
-        <a href="https://wa.me/6281353343110" target="_blank" rel="noopener" title="WhatsApp">💬 WhatsApp</a>
+        <a href="https://wa.me/{{ isset($websiteSettings) && $websiteSettings->nomor_whatsapp ? $websiteSettings->nomor_whatsapp : '628133433110' }}" target="_blank" rel="noopener" title="WhatsApp">💬 WhatsApp</a>
         <a href="https://www.tiktok.com/@phdtrans" target="_blank" rel="noopener" title="TikTok">🎵 TikTok</a>
         <a href="https://www.instagram.com/phd_trans/?hl=en" target="_blank" rel="noopener" title="Instagram">📸 Instagram</a>
       </div>

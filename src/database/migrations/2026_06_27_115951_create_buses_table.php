@@ -18,12 +18,14 @@ return new class extends Migration
             $table->enum('kategori_bus', [
                 'Big Bus',
                 'Medium Bus',
+                'Travel',
             ]);
 
             $table->enum('tipe_bus', [
-                'SHD Single Glass',
-                'SHD Double Glass',
-                'Medium',
+                'Super High Deck Single Glass',
+                'Super High Deck Double Glass',
+                'Medium High Deck Single Glass',
+                'Travel',
             ]);
 
             $table->unsignedInteger('kapasitas');
