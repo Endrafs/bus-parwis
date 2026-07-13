@@ -91,10 +91,8 @@ class PageSectionResource extends Resource
 
                         Forms\Components\FileUpload::make('media_path')
                             ->label('File Media')
-                            ->image()
                             ->directory('page-media')
-                            ->imageEditor()
-                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm'])
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml', 'video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'])
                             ->maxSize(102400)
                             ->visible(fn (Forms\Get $get) => in_array($get('media_type'), ['image', 'video'])),
 
@@ -122,9 +120,9 @@ class PageSectionResource extends Resource
 
                                 Forms\Components\FileUpload::make('file_path')
                                     ->label('File')
-                                    ->image()
                                     ->directory('gallery')
                                     ->maxSize(102400)
+                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm', 'video/ogg'])
                                     ->visible(fn (Forms\Get $get) => in_array($get('media_type'), ['image', 'video'])),
 
                                 Forms\Components\TextInput::make('youtube_url')

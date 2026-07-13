@@ -1,0 +1,103 @@
+# ======================================================
+# GitHub Actions — Deploy PHD Trans ke Hostinger VPS
+# ======================================================
+# Cara setup:
+#   1. Di GitHub repo, buka Settings → Secrets and variables → Actions
+#   2. Tambahkan secrets berikut:
+#      - SSH_HOST       : IP VPS Hostinger
+#      - SSH_USERNAME   : root (atau user VPS)
+#      - SSH_PRIVATE_KEY: Private key SSH untuk akses VPS
+#      - DB_PASSWORD    : Password database
+#   3. Setiap push ke branch 'main' akan auto-deploy
+# ======================================================
+
+name: Deploy to Hostinger VPS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: mbstring, xml, bcmath, gd, intl, zip, pdo_mysql
+
+      - name: Install Composer Dependencies
+        run: |
+          cd src
+          composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build Frontend Assets
+        run: |
+          cd src
+          npm ci
+          npm run build
+
+      - name: Deploy via SSH
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: |
+            src/
+            nginx/production.conf
+            deploy.sh
+          target: /var/www/busparwis
+          strip_components: 0
+          rm: false
+
+      - name: Post-Deployment Commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+
+            cd /var/www/busparwis/src
+
+            # Setup .env jika belum ada
+            if [ ! -f .env ]; then
+              cp .env.example .env
+              sed -i "s/APP_ENV=.*/APP_ENV=production/" .env
+              sed -i "s|APP_URL=.*|APP_URL=https://busparwis.my.id|" .env
+              sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=${{ secrets.DB_PASSWORD }}/" .env
+            fi
+
+            # Optimasi & maintenance
+            php artisan optimize:clear
+            php artisan optimize
+            php artisan view:cache
+            php artisan route:cache
+            php artisan config:cache
+            php artisan migrate --force
+
+            # Storage link
+            php artisan storage:link --force || true
+
+            # Permissions
+            chown -R www-data:www-data .
+            chmod -R 775 storage bootstrap/cache
+
+            # Restart queue worker
+            supervisorctl restart busparwis-worker:* || true
+
+            echo "✅ Deployment selesai!"
