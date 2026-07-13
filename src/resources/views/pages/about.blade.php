@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>PHD Trans · Tentang Kami</title>
-  <meta name="description" content="Tentang PHD Trans — Penyedia layanan penyewaan bus pariwisata terpercaya sejak 2015." />
+  <title>{{ $websiteSettings->nama_website ?? 'PHD Trans' }} · Tentang Kami</title>
+  <meta name="description" content="{{ $websiteSettings->deskripsi ?? 'Tentang PHD Trans — Penyedia layanan penyewaan bus pariwisata terpercaya sejak 2015.' }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300..700&family=JetBrains+Mono:wght@400..600&display=swap" />

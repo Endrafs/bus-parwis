@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>PHD Trans · Kontak</title>
-  <meta name="description" content="Hubungi PHD Trans untuk pemesanan dan informasi penyewaan bus pariwisata." />
+  <title>{{ $websiteSettings->nama_website ?? 'PHD Trans' }} · Kontak</title>
+  <meta name="description" content="{{ $websiteSettings->deskripsi ?? 'Hubungi PHD Trans untuk pemesanan dan informasi penyewaan bus pariwisata.' }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300..700&family=JetBrains+Mono:wght@400..600&display=swap" />

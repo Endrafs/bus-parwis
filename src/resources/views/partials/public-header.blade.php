@@ -1,7 +1,7 @@
 <header class="site-header glass-nav">
   <div class="container container--wide">
     <nav class="nav" aria-label="Primary">
-      <a class="brand" href="{{ route('home') }}"><img src="{{ asset('images/logo_phd1.png') }}" alt="PHD Trans" class="brand-logo" /></a>
+      <a class="brand" href="{{ route('home') }}"><img src="{{ isset($websiteSettings) && $websiteSettings->logo ? asset('storage/' . $websiteSettings->logo) : asset('images/logo_phd1.png') }}" alt="{{ $websiteSettings->nama_website ?? 'PHD Trans' }}" class="brand-logo" /></a>
       <div class="nav-links" role="navigation">
         <a href="{{ route('home') }}" @if(request()->routeIs('home')) aria-current="page" @endif>Armada</a>
         <a href="{{ route('about') }}" @if(request()->routeIs('about')) aria-current="page" @endif>Tentang</a>

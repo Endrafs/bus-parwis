@@ -2,8 +2,8 @@
   <div class="container container--wide">
     <div class="footer-top">
       <div class="footer-brand">
-        <span class="brand"><img src="{{ asset('images/logo_phd2.png') }}" alt="PHD Trans" class="brand-logo" /></span>
-        <p>Penyedia layanan penyewaan bus pariwisata terpercaya sejak 2015. Armada lengkap, harga transparan, pelayanan profesional.</p>
+        <span class="brand"><img src="{{ isset($websiteSettings) && $websiteSettings->logo ? asset('storage/' . $websiteSettings->logo) : asset('images/logo_phd2.png') }}" alt="{{ $websiteSettings->nama_website ?? 'PHD Trans' }}" class="brand-logo" /></span>
+        <p>{{ $websiteSettings->deskripsi ?? 'Penyedia layanan penyewaan bus pariwisata terpercaya sejak 2015. Armada lengkap, harga transparan, pelayanan profesional.' }}</p>
         @if(isset($websiteSettings) && $websiteSettings->nomor_whatsapp)
           <span class="label">{{ $websiteSettings->nomor_whatsapp }}</span>
         @else
