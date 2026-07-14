@@ -10,8 +10,19 @@
             <img src="{{ $item->url }}" alt="{{ $item->caption ?? 'Gallery image' }}" loading="lazy" />
             @break
           @case('video')
+            @php
+              $ext = strtolower(pathinfo($item->url, PATHINFO_EXTENSION));
+              $mime = match($ext) {
+                'webm' => 'video/webm',
+                'ogg', 'ogv' => 'video/ogg',
+                'mov' => 'video/quicktime',
+                'avi' => 'video/x-msvideo',
+                'mkv' => 'video/x-matroska',
+                default => 'video/mp4',
+              };
+            @endphp
             <video muted loop playsinline>
-              <source src="{{ $item->url }}" type="video/mp4">
+              <source src="{{ $item->url }}" type="{{ $mime }}">
             </video>
             @break
           @case('youtube')

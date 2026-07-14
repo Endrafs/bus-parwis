@@ -91,13 +91,14 @@ class PageSectionResource extends Resource
 
                         Forms\Components\FileUpload::make('media_path')
                             ->label('File Media')
+                            ->disk('public')
                             ->directory('page-media')
                             ->acceptedFileTypes([
-                                'image/jpeg', 'image/png', 'image/webp', 'image/svg+xml', 'image/gif',
+                                'image/jpeg', 'image/png', 'image/webp', 'image/svg+xml', 'image/gif', 'image/*',
                                 'video/mp4', 'video/webm', 'video/ogg', 'video/quicktime',
-                                'video/x-msvideo', 'video/x-matroska', 'application/octet-stream',
+                                'video/x-msvideo', 'video/x-matroska', 'video/*',
                             ])
-                            ->maxSize(204800)
+                            ->maxSize(200000)
                             ->visible(fn (Forms\Get $get) => in_array($get('media_type'), ['image', 'video'])),
 
                         Forms\Components\TextInput::make('media_url')
@@ -124,12 +125,13 @@ class PageSectionResource extends Resource
 
                                 Forms\Components\FileUpload::make('file_path')
                                     ->label('File')
+                                    ->disk('public')
                                     ->directory('gallery')
-                                    ->maxSize(204800)
+                                    ->maxSize(200000)
                                     ->acceptedFileTypes([
-                                        'image/jpeg', 'image/png', 'image/webp', 'image/gif',
-                                        'video/mp4', 'video/webm', 'video/ogg',
-                                        'video/x-msvideo', 'video/x-matroska', 'application/octet-stream',
+                                        'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/*',
+                                        'video/mp4', 'video/webm', 'video/ogg', 'video/quicktime',
+                                        'video/x-msvideo', 'video/x-matroska', 'video/*',
                                     ])
                                     ->visible(fn (Forms\Get $get) => in_array($get('media_type'), ['image', 'video'])),
 
