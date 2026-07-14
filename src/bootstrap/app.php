@@ -17,6 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ])
     ->withMiddleware(function (Middleware $m) {
         $m->trustProxies(at: "*");
+        $m->validateCsrfTokens(except: ['livewire/upload-file', 'livewire/preview-file']);
+        $m->validateCsrfTokens(except: [
+            "livewire/upload-file",
+            "livewire/preview-file",
+        ]);
     })
     ->withExceptions(function (Exceptions $e) {
         //
