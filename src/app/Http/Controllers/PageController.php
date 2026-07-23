@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ContactMessage;
 use App\Models\PageSection;
 use App\Models\WebsiteSetting;
 use Illuminate\Http\Request;
@@ -49,6 +50,8 @@ class PageController extends Controller
             'no_wa' => 'required|string|max:20',
             'pesan' => 'required|string|max:1000',
         ]);
+
+        ContactMessage::create($validated);
 
         return redirect()->route('contact')->with('success', 'Pesan Anda telah terkirim! Tim kami akan membalas dalam 1×24 jam kerja.');
     }

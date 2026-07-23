@@ -83,7 +83,7 @@
                 <h3>{{ $icon }} {{ $ch['value'] ?? $channelType }}</h3>
                 <p>{{ $ch['desc'] ?? '' }}</p>
                 @if($channelType === 'wa')
-                  <a class="channel-line" href="https://wa.me/{{ $websiteSettings->nomor_whatsapp ?? '6281234567890' }}" target="_blank">{{ $websiteSettings->nomor_whatsapp ?? '+62 813-5334-3110' }}</a>
+                  <a class="channel-line" href="https://wa.me/{{ $websiteSettings->nomor_whatsapp ?? '6281353433110' }}" target="_blank">{{ $websiteSettings->nomor_whatsapp ?? '+62 813-5343-3110' }}</a>
                 @elseif($channelType === 'email')
                   <a class="channel-line" href="mailto:{{ $websiteSettings->email ?? 'cs@phdtrans.com' }}">{{ $websiteSettings->email ?? 'cs@phdtrans.com' }}</a>
                 @endif
@@ -180,7 +180,7 @@
           @endif
         </p>
         <div class="cta-row">
-          <a class="btn btn--primary btn--lg" href="https://wa.me/{{ $websiteSettings->nomor_whatsapp ?? '6281353343110' }}" target="_blank">Whatsapp Kami
+          <a class="btn btn--primary btn--lg" href="https://wa.me/{{ $websiteSettings->nomor_whatsapp ?? '6281353433110' }}" target="_blank">Whatsapp Kami
             <svg class="arrow" width="16" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true"><path d="M1 5h12m0 0L9 1m4 4L9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
           <a class="btn btn--ghost btn--lg" href="mailto:cs@phdtrans.com">Atau kirim email</a>

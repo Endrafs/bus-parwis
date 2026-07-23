@@ -40,7 +40,7 @@
     <div class="footer-bottom">
       <span>© {{ date('Y') }} <img src="{{ asset('images/logo_phd2.png') }}" alt="PHD Trans" class="brand-logo-inline" /> · All rights reserved.</span>
       <div class="footer-meta-links">
-        <a href="https://wa.me/{{ isset($websiteSettings) && $websiteSettings->nomor_whatsapp ? $websiteSettings->nomor_whatsapp : '628133433110' }}" target="_blank" rel="noopener" title="WhatsApp">💬 WhatsApp</a>
+        <a href="https://wa.me/{{ isset($websiteSettings) && $websiteSettings->nomor_whatsapp ? $websiteSettings->nomor_whatsapp : '6281353433110' }}" target="_blank" rel="noopener" title="WhatsApp">💬 WhatsApp</a>
         <a href="https://www.tiktok.com/@phdtrans" target="_blank" rel="noopener" title="TikTok">🎵 TikTok</a>
         <a href="https://www.instagram.com/phd_trans/?hl=en" target="_blank" rel="noopener" title="Instagram">📸 Instagram</a>
       </div>
